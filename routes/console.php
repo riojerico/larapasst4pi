@@ -13,6 +13,16 @@ use Illuminate\Foundation\Inspiring;
 |
 */
 
+Artisan::command("make:user",function () {
+   DB::table("users")->insert([
+      "name"=>"Superadmin",
+       "email"=>"admin@t4t.com",
+       "password"=>Hash::make(123456),
+       "created_at"=>now()->format("Y-m-d H:i:s")
+   ]);
+   $this->info("Create user success");
+});
+
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');

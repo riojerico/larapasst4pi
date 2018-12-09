@@ -11,6 +11,10 @@
 |
 */
 
+Route::get("auth/logout", "AuthController@getLogout");
+Route::get("auth/login", "AuthController@postLogin");
+Route::get("auth/login", "AuthController@getLogin");
+
 Route::get('/', function () {
     return view('welcome');
 });
