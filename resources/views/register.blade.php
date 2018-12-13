@@ -23,6 +23,11 @@
         </div>
 
         <div class="form-group">
+            <label for="" style="text-align: left;display: block">Address</label>
+            <input type="text" class="form-control" name="address" required>
+        </div>
+
+        <div class="form-group">
             <label for="" style="text-align: left;display: block">Comment</label>
             <input type="text" class="form-control" name="comment" required>
         </div>

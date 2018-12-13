@@ -50,11 +50,13 @@ class AuthController extends Controller
     {
         try {
             $this->validate($request, [
-                "name"=>"required|min:1|max:99",
-                "lastname"=>"required|min:1|max:99",
+                "name"=>"required|string|min:1|max:99",
+                "lastname"=>"required|string|min:1|max:99",
+                "comment"=>"string|string|min:1|max:255",
+                "address"=>"required|string|min:max:255",
                 "photo"=>"required|image",
                 "email" => "unique:users|email",
-                "password" => "required"
+                "password" => "required|string"
             ]);
 
             UsersService::register($request);

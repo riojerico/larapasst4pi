@@ -25,22 +25,7 @@ class Model
         if($row) {
             foreach ($row as $key => $val) {
                 if ($key) {
-                    if (starts_with($key, 'id_')) {
-                        $relationTable = str_replace('id_', '', $key);
-                        $methodName = camel_case('set ' . $relationTable);
-                        if(!method_exists($this, $methodName)) {
-                            $methodName = camel_case("set ".$key);
-                        }
-                    } elseif (ends_with($key, '_id')) {
-                        $relationTable = str_replace('_id', '', $key);
-                        $methodName = camel_case('set ' . $relationTable);
-                        if(!method_exists($this, $methodName)) {
-                            $methodName = camel_case("set ".$key);
-                        }
-                    } else {
-                        $methodName = camel_case('set ' . $key);
-                    }
-
+                    $methodName = camel_case('set ' . $key);
                     if(method_exists($this, $methodName)) {
                         $this->$methodName($val);
                     }
@@ -120,7 +105,7 @@ class Model
      */
     public static function getPrimaryKey()
     {
-        return Helper::findPrimaryKey(self::getTableName());
+        return Helper::findPrimaryKey(self::getTableName(), static::$connection);
     }
 
     /**
@@ -136,7 +121,8 @@ class Model
      */
     public static function getMaxId()
     {
-        return DB::connection(static::$connection)->table(self::getTableName())->max(self::getPrimaryKey());
+        return DB::connection(static::$connection)
+            ->table(self::getTableName())->max(self::getPrimaryKey());
     }
 
     /**
@@ -150,13 +136,13 @@ class Model
 
             if (ends_with($column, '_id')) {
                 $relationTable = str_replace('_id', '', $column);
-                $relationTablePK = Helper::findPrimaryKey($relationTable);
+                $relationTablePK = Helper::findPrimaryKey($relationTable, static::$connection);
                 if (Schema::hasTable($relationTable)) {
                     self::join($relationTable, $relationTablePK, '=', $tableName.'.'.$column);
                 }
             }elseif (starts_with($column, 'id_')) {
                 $relationTable = str_replace('id_', '', $column);
-                $relationTablePK = Helper::findPrimaryKey($relationTable);
+                $relationTablePK = Helper::findPrimaryKey($relationTable, static::$connection);
                 if (Schema::hasTable($relationTable)) {
                     self::join($relationTable, $relationTablePK, '=', $tableName.'.'.$column);
                 }
@@ -312,28 +298,14 @@ class Model
     {
         try{
             $model = $this;
-            $pk = Helper::findPrimaryKey(static::$tableName);
+            $pk = Helper::findPrimaryKey(static::$tableName, static::$connection);
             $columns = DB::connection(static::$connection)->getSchemaBuilder()->getColumnListing(static::$tableName);
             $pkColumn = camel_case('get '.$pk);
 
             $data = [];
             foreach($columns as $column)
             {
-                if(starts_with($column, 'id_')) {
-                    $relationName = str_replace('id_','',$column);
-                    $methodName = camel_case('get '.$relationName);
-                    if(!method_exists($model, $methodName)) {
-                        $methodName = camel_case("get ".$column);
-                    }
-                }elseif (ends_with($column,'_id')) {
-                    $relationName = str_replace('_id','',$column);
-                    $methodName = camel_case('get '.$relationName);
-                    if(!method_exists($model, $methodName)) {
-                        $methodName = camel_case("get ".$column);
-                    }
-                }else{
-                    $methodName = camel_case('get '.$column);
-                }
+                $methodName = camel_case('get '.$column);
 
                 if(method_exists($model, $methodName)) {
                     $getAttr = $model->{$methodName}();
@@ -390,7 +362,7 @@ class Model
     {
         if(self::$id || $id) {
             $id = ($id)?:self::$id;
-            $pk = Helper::findPrimaryKey(static::$tableName);
+            $pk = Helper::findPrimaryKey(static::$tableName, static::$connection);
             DB::connection(static::$connection)->table(self::getTableName())->where($pk,$id)->delete();
         }
     }
@@ -398,7 +370,7 @@ class Model
     public static function deleteById($id) {
         if(self::$id || $id) {
             $id = ($id)?:self::$id;
-            $pk = Helper::findPrimaryKey(static::$tableName);
+            $pk = Helper::findPrimaryKey(static::$tableName, static::$connection);
             DB::connection(static::$connection)->table(self::getTableName())->where($pk,$id)->delete();
         }
     }

@@ -6,7 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\CBModels\\T4tParticipant' => $baseDir . '/app/CBModels/T4TParticipant.php',
     'App\\CBModels\\Users' => $baseDir . '/app/CBModels/Users.php',
+    'App\\CBRepositories\\T4tParticipantRepository' => $baseDir . '/app/CBRepositories/T4TParticipantRepository.php',
     'App\\CBRepositories\\UsersRepository' => $baseDir . '/app/CBRepositories/UsersRepository.php',
     'App\\CBServices\\UsersService' => $baseDir . '/app/CBServices/UsersService.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',

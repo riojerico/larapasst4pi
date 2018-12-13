@@ -66,13 +66,7 @@ class MakeModel extends Command
         $properties = "\n";
         foreach($columns as $column)
         {
-            if(ends_with($column,'_id')) {
-                $column = str_replace('_id','',$column);
-            }elseif (starts_with($column, 'id_')) {
-                $column = str_replace('id_','',$column);
-            }
             $columnCamel = camel_case($column);
-
             $properties .= "\tprivate \$".$columnCamel.";\n";
         }
         $template = str_replace('[properties]', $properties, $template);
@@ -83,11 +77,9 @@ class MakeModel extends Command
         {
             $hintClassName = null;
             if(ends_with($column,'_id')) {
-                $column = str_replace('_id','',$column);
-                $hintClassName = studly_case($column);
+                $hintClassName = studly_case(str_replace('_id','',$column));
             }elseif (starts_with($column, 'id_')) {
-                $column = str_replace('id_','',$column);
-                $hintClassName = studly_case($column);
+                $hintClassName = studly_case(str_replace('id_','',$column));
             }
 
             $columnCamel = camel_case($column);

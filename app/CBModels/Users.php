@@ -1,6 +1,7 @@
 <?php
 namespace App\CBModels;
 
+use App\CBRepositories\T4tParticipantRepository;
 use DB;
 use Crocodicstudio\Cbmodel\Core\Model;
 
@@ -19,7 +20,7 @@ class Users extends Model
 	private $updatedAt;
 	private $role;
 	private $photo;
-	private $t4tParticipant;
+	private $t4tParticipantNo;
 
 
     
@@ -106,12 +107,12 @@ class Users extends Model
 	/**
 	* @return T4tParticipant
 	*/
-	public function getT4tParticipant() {
-		return T4tParticipant::findById($this->t4tParticipant);
+	public function getT4tParticipantNo() {
+		return T4tParticipant::findById($this->t4tParticipantNo);
 	}
 
-	public function setT4tParticipant($t4tParticipant) {
-		$this->t4tParticipant = $t4tParticipant;
+	public function setT4tParticipantNo($t4tParticipantNo) {
+		$this->t4tParticipantNo = $t4tParticipantNo;
 	}
 
 

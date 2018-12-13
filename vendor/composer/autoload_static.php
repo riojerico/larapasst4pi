@@ -478,7 +478,9 @@ class ComposerStaticInit83d3554aa8a3258ca64f6709c40f1902
     );
 
     public static $classMap = array (
+        'App\\CBModels\\T4tParticipant' => __DIR__ . '/../..' . '/app/CBModels/T4TParticipant.php',
         'App\\CBModels\\Users' => __DIR__ . '/../..' . '/app/CBModels/Users.php',
+        'App\\CBRepositories\\T4tParticipantRepository' => __DIR__ . '/../..' . '/app/CBRepositories/T4TParticipantRepository.php',
         'App\\CBRepositories\\UsersRepository' => __DIR__ . '/../..' . '/app/CBRepositories/UsersRepository.php',
         'App\\CBServices\\UsersService' => __DIR__ . '/../..' . '/app/CBServices/UsersService.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
