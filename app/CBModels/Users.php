@@ -18,6 +18,8 @@ class Users extends Model
 	private $createdAt;
 	private $updatedAt;
 	private $role;
+	private $photo;
+	private $t4tParticipant;
 
 
     
@@ -91,6 +93,25 @@ class Users extends Model
 
 	public function setRole($role) {
 		$this->role = $role;
+	}
+
+	public function getPhoto() {
+		return $this->photo;
+	}
+
+	public function setPhoto($photo) {
+		$this->photo = $photo;
+	}
+
+	/**
+	* @return T4tParticipant
+	*/
+	public function getT4tParticipant() {
+		return T4tParticipant::findById($this->t4tParticipant);
+	}
+
+	public function setT4tParticipant($t4tParticipant) {
+		$this->t4tParticipant = $t4tParticipant;
 	}
 
 

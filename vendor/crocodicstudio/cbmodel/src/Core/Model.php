@@ -11,6 +11,7 @@ class Model
 {
     private static $tableQuery = null;
     public static $tableName = null;
+    public static $connection = null;
     private static $relations = [];
     public static $autojoin = true;
     public static $joinException = [];
@@ -63,7 +64,7 @@ class Model
         }
 
         self::$tableQuery['tableName'] = static::$tableName;
-        self::$tableQuery['query'] = DB::table(static::$tableName)->select(static::$tableName . '.*');
+        self::$tableQuery['query'] = DB::connection(static::$connection)->table(static::$tableName)->select(static::$tableName . '.*');
 
         if (self::$autojoin) {
             self::autoJoinIt(static::$tableName);
@@ -76,7 +77,7 @@ class Model
                 $tableFrom = (str_contains($relate['tableFrom'], ' as ')) ? str_after($relate['tableFrom'], ' as ') : $relate['tableFrom'];
                 self::$tableQuery['query']->leftjoin($relate['tableFrom'], $tableFrom . '.' . $relate['tableFromPK'], $relate['operator'], $relate['dest']);
 
-                $columns = DB::getSchemaBuilder()->getColumnListing($relate['tableFrom']);
+                $columns = DB::connection(static::$connection)->getSchemaBuilder()->getColumnListing($relate['tableFrom']);
                 foreach ($columns as $column) {
                     $alias = ($relate['prefix']) ? $relate['prefix'] . '_' . $relate['tableFrom'] . '_' . $column : $relate['tableFrom'] . '_' . $column;
                     self::$tableQuery['query']->addselect($tableFrom . '.' . $column . ' as ' . $alias);
@@ -94,7 +95,7 @@ class Model
      */
     public static function simpleQuery()
     {
-        return DB::table(static::$tableName);
+        return DB::connection(static::$connection)->table(static::$tableName);
     }
 
     /**
@@ -135,7 +136,7 @@ class Model
      */
     public static function getMaxId()
     {
-        return DB::table(self::getTableName())->max(self::getPrimaryKey());
+        return DB::connection(static::$connection)->table(self::getTableName())->max(self::getPrimaryKey());
     }
 
     /**
@@ -143,7 +144,7 @@ class Model
      */
     private static function autoJoinIt($tableName)
     {
-        $columns = DB::getSchemaBuilder()->getColumnListing($tableName);
+        $columns = DB::connection(static::$connection)->getSchemaBuilder()->getColumnListing($tableName);
         foreach ($columns as $column) {
             if (in_array($column, static::$joinException)) continue;
 
@@ -210,6 +211,7 @@ class Model
     public static function init()
     {
         if (!self::$tableQuery || self::$tableQuery['tableName'] != self::$tableName) {
+            static::$connection = (static::$connection)?:config("database.default");
             self::table();
         }
     }
@@ -311,7 +313,7 @@ class Model
         try{
             $model = $this;
             $pk = Helper::findPrimaryKey(static::$tableName);
-            $columns = DB::getSchemaBuilder()->getColumnListing(static::$tableName);
+            $columns = DB::connection(static::$connection)->getSchemaBuilder()->getColumnListing(static::$tableName);
             $pkColumn = camel_case('get '.$pk);
 
             $data = [];
@@ -360,15 +362,17 @@ class Model
             if(isset($data[$pk])) {
                 $pkValue = $data[$pk];
                 unset($data[$pk]);
-                DB::table(static::$tableName)->where($pk,$pkValue)->update($data);
+                DB::connection(static::$connection)->table(static::$tableName)->where($pk,$pkValue)->update($data);
             }else{
                 if(self::$uniqueData) {
-                    if(DB::table(static::$tableName)->where($data)->exists()) {
+                    if(DB::connection(static::$connection)->table(static::$tableName)->where($data)->exists()) {
                         throw new \Exception("The data has already exists!");
                     }
                 }
 
-                self::$lastInsertId = DB::table(static::$tableName)->where($pk,$model->$pkColumn)->insertGetId($data);
+                self::$lastInsertId = DB::connection(static::$connection)->table(static::$tableName)
+                    ->where($pk,$this->{$pkColumn}())
+                    ->insertGetId($data);
                 $pkValue = self::$lastInsertId;
             }
 
@@ -387,7 +391,7 @@ class Model
         if(self::$id || $id) {
             $id = ($id)?:self::$id;
             $pk = Helper::findPrimaryKey(static::$tableName);
-            DB::table(self::getTableName())->where($pk,$id)->delete();
+            DB::connection(static::$connection)->table(self::getTableName())->where($pk,$id)->delete();
         }
     }
 
@@ -395,7 +399,7 @@ class Model
         if(self::$id || $id) {
             $id = ($id)?:self::$id;
             $pk = Helper::findPrimaryKey(static::$tableName);
-            DB::table(self::getTableName())->where($pk,$id)->delete();
+            DB::connection(static::$connection)->table(self::getTableName())->where($pk,$id)->delete();
         }
     }
 

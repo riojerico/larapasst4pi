@@ -10,12 +10,14 @@ class DashboardController extends Controller
 
     public function __construct()
     {
-        $this->middleware("BackendMiddleware");
+        $this->middleware("backend");
     }
 
     public function getIndex()
     {
 
-        return view("dashboard");
+        $data['currentMenu'] = 'Dashboard';
+        $data['pageTitle'] = 'Dashboard';
+        return view("dashboard",$data);
     }
 }

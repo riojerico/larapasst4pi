@@ -12,7 +12,7 @@ class MakeModel extends Command
      *
      * @var string
      */
-    protected $signature = 'cbmodel:make {table} {RepoName?}';
+    protected $signature = 'cbmodel:make {table} {RepoName?} {connection?}';
 
     /**
      * The console command description.
@@ -30,6 +30,7 @@ class MakeModel extends Command
     {
         $table = $this->argument('table');
         $repoName = $this->argument('RepoName');
+        $connection = $this->argument('connection')?:config("database.default");
 
         $path = app_path('CBModels');
 
@@ -54,11 +55,14 @@ class MakeModel extends Command
         $template = str_replace('[tableName]',$table, $template);
         $repoTemplate = str_replace('[tableName]', $table, $repoTemplate);
 
+        //Assign Connection
+        $template = str_replace('[connection]', $connection, $template);
+
         //Get PK
-        $pk = Helper::findPrimaryKey($table);
+        $pk = Helper::findPrimaryKey($table, $connection);
 
         //Assign Columns Properties
-        $columns = DB::getSchemaBuilder()->getColumnListing($table);
+        $columns = DB::connection($connection)->getSchemaBuilder()->getColumnListing($table);
         $properties = "\n";
         foreach($columns as $column)
         {

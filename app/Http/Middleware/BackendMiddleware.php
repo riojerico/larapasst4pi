@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\CBServices\UsersService;
 use Closure;
 
 class BackendMiddleware
@@ -15,8 +16,8 @@ class BackendMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(!session()->has("t4t_users_id")) {
-            return redirect("auth/login")->with(['message'=>'Please sign in for first!','message_type'=>'warning']);
+        if(!UsersService::isLoggedIn()) {
+            return redirect()->action("AuthController@getLogin")->with(['message'=>'Please sign in for first!','message_type'=>'warning']);
         }
 
         return $next($request);

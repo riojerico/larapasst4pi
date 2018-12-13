@@ -11,10 +11,12 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{{ asset('css/signin.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/signin.css') }}?t={{ time() }}" rel="stylesheet">
 </head>
 
 <body class="text-center">
+
+
     @yield('content')
 </body>
 </html>

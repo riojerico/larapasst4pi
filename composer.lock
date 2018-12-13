@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81a001811630fbecb679b283b9d7958f",
+    "content-hash": "7cbf4e7c4d52ff8840de63da786ea7a5",
     "packages": [
         {
             "name": "crocodicstudio/cbmodel",

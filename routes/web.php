@@ -11,9 +11,22 @@
 |
 */
 
-Route::get("auth/logout", "AuthController@getLogout");
-Route::get("auth/login", "AuthController@postLogin");
-Route::get("auth/login", "AuthController@getLogin");
+Route::prefix(config("app.admin_path"))->group(function () {
+
+    Route::get("oauth_clients", "OAuthClientsController@getIndex");
+
+    Route::get("dashboard", "DashboardController@getIndex");
+});
+
+Route::prefix(config("app.admin_auth_path"))->group(function () {
+
+    $this->get("register", "AuthController@getRegister");
+    $this->post("register", "AuthController@postRegister");
+
+    Route::get("logout", "AuthController@getLogout");
+    Route::post("login", "AuthController@postLogin");
+    Route::get("login", "AuthController@getLogin")->name("login");
+});
 
 Route::get('/', function () {
     return view('welcome');

@@ -9,16 +9,24 @@
 namespace App\CBServices;
 
 
+use App\CBModels\Users;
 use App\CBRepositories\UsersRepository;
+use App\Helpers\FileHelper;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UsersService
 {
-    private static $session_name = "t4t_users_id";
-
     public static function logout(): void
     {
-        session()->forget(self::$session_name);
+        Auth::logout();
+    }
+
+    public static function isLoggedIn(): bool
+    {
+        if(Auth::check()) return true;
+        else return false;
     }
 
     /**
@@ -26,18 +34,31 @@ class UsersService
      */
     public static function getLoginUserData()
     {
-        return UsersRepository::findById(session(static::$session_name));
+        $user = UsersRepository::findById(Auth::id());
+        return $user;
     }
 
     public static function login(string $email, string $password): bool
     {
-        $user = UsersRepository::findByEmail($email);
-        if(Hash::check($password, $user->getPassword()))
-        {
-            session()->put(static::$session_name, $user->getId());
+        if(Auth::attempt(['email'=> $email, 'password'=> $password])) {
             return true;
         }else{
             return false;
         }
+    }
+
+    public static function register(Request $request)
+    {
+
+        $photo = FileHelper::uploadFile("photo");
+
+        $user = new Users();
+        $user->setRole("Participant");
+        $user->setName($request->name);
+        $user->setEmail($request->email);
+        $user->setPassword(Hash::make($request->password));
+        $user->save();
+
+
     }
 }

@@ -13,6 +13,9 @@ return [
     |
     */
 
+    'admin_path'=> "app",
+    "admin_auth_path"=> "auth",
+
     'name' => env('APP_NAME', 'Laravel'),
 
     /*
