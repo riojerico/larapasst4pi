@@ -13,4 +13,9 @@ class UsersRepository extends Users
         return new static(static::table()->where("email", $email)->first());
     }
 
+    public static function findAllParticipant()
+    {
+        return static::table()->where('role','Participant')->get();
+    }
+
 }

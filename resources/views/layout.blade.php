@@ -38,12 +38,25 @@
                             Dashboard <span class="sr-only">(current)</span>
                         </a>
                     </li>
+
+                    @if(auth()->user()->role == "Superadmin")
+                    <li class="nav-item">
+                        <a class="nav-link {{ $currentMenu=='Manage Participant'?'active':'' }}" href="{{ action('ManageParticipantController@getIndex') }}">
+                            <span data-feather="user"></span>
+                            Manage Participant
+                        </a>
+                    </li>
+                    @endif
+
+                    @if(auth()->user()->role == "Participant")
                     <li class="nav-item">
                         <a class="nav-link {{ $currentMenu=='OAuth Clients'?'active':'' }}" href="{{ action('OAuthClientsController@getIndex') }}">
                             <span data-feather="user"></span>
-                            OAuth Clients
+                            Client Secret Key
                         </a>
                     </li>
+                    @endif
+
                 </ul>
 
             </div>
@@ -63,6 +76,10 @@
                     </button>
                 </div>
             </div>
+
+            @if(session()->has('message'))
+                <div class="alert alert-{{ session('message_type') }}">{!! session('message') !!}</div>
+            @endif
 
             @yield('content')
         </main>
@@ -84,6 +101,9 @@
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
+    $(function () {
+        $(".datatable").DataTable();
+    })
     feather.replace()
 </script>
 

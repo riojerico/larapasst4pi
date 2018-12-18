@@ -13,6 +13,11 @@
 
 Route::prefix(config("app.admin_path"))->group(function () {
 
+    $this->post('manage-participant/edit-save/{id}', 'ManageParticipantController@postEditSave');
+    $this->get("manage-participant/edit/{id}", "ManageParticipantController@getEdit");
+    $this->get('manage-participant/delete/{id}', 'ManageParticipantController@getDelete');
+    $this->get("manage-participant", "ManageParticipantController@getIndex");
+
     Route::get("oauth_clients", "OAuthClientsController@getIndex");
 
     Route::get("dashboard", "DashboardController@getIndex");
