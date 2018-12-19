@@ -20,4 +20,13 @@ class ResponseHelper
         return redirect()->back()->with(['message'=>$message,'message_type'=>$type]);
     }
 
+    public static function responseAPI($status, $message, $data = null)
+    {
+        $response = [];
+        $response['status'] = $status;
+        $response['message'] = $message;
+        if($data) $response['data'] = $data;
+        return response()->json($response, $status);
+    }
+
 }

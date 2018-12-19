@@ -15,7 +15,10 @@ class UsersRepository extends Users
 
     public static function findAllParticipant()
     {
-        return static::table()->where('role','Participant')->get();
+        return static::table()
+            ->leftjoin("t4t_t4t.t4t_participant as a","a.no","=","users.t4t_participant_no")
+            ->addSelect("a.id as code")
+            ->where('role','Participant')->get();
     }
 
 }

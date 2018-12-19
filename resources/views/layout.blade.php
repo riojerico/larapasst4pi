@@ -46,6 +46,12 @@
                             Manage Participant
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ $currentMenu=='Activity Log'?'active':'' }}" href="{{ action('ActivityLogController@getIndex') }}">
+                            <span data-feather="file-text"></span>
+                            Activity Log
+                        </a>
+                    </li>
                     @endif
 
                     @if(auth()->user()->role == "Participant")
@@ -82,6 +88,8 @@
             @endif
 
             @yield('content')
+
+            <br/><br/>
         </main>
     </div>
 </div>

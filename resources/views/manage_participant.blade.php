@@ -7,6 +7,7 @@
             <tr>
                 <th>ID</th>
                 <th>CREATED</th>
+                <th>CODE</th>
                 <th>NAME</th>
                 <th>EMAIL</th>
                 <th>PHOTO</th>
@@ -18,6 +19,7 @@
                 <tr>
                     <td>{{ $row->id }}</td>
                     <td>{{ $row->created_at }}</td>
+                    <td>{{ $row->code }}</td>
                     <td>{{ $row->name }}</td>
                     <td>{{ $row->email }}</td>
                     <td><img src="{{ $row->photo?asset($row->photo):'http://placehold.it/50x50' }}" width="50px" height="50px" alt="Photo"></td>

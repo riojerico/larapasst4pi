@@ -11,7 +11,19 @@
 |
 */
 
+$this->post("api/login","ApiAuthController@postLogin");
+
+
+
+Route::middleware("auth:api")->prefix("api")->group(function () {
+    $this->post("donor/update","ApiDonorController@postUpdate");
+    $this->post("donor/create","ApiDonorController@postCreate");
+    $this->get("donor/list", "ApiDonorCOntroller@getList");
+});
+
 Route::prefix(config("app.admin_path"))->group(function () {
+
+    $this->get("activity-log", "ActivityLogController@getIndex");
 
     $this->post('manage-participant/edit-save/{id}', 'ManageParticipantController@postEditSave');
     $this->get("manage-participant/edit/{id}", "ManageParticipantController@getEdit");

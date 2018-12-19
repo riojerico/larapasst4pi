@@ -39,6 +39,10 @@ class BackendMiddleware
             if(!$this->isSuperadmin()) return $this->deniedMessage();
         }
 
+        if($request->is(config('app.admin_path').'/activity-log*')) {
+            if(!$this->isSuperadmin()) return $this->deniedMessage();
+        }
+
         return $next($request);
     }
 }

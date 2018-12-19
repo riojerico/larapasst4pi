@@ -8,6 +8,10 @@
         */
     @endphp
 
+    <p>
+        <a href="{{ action('ManageParticipantController@getIndex') }}"><i class="fa fa-arrow-left"></i> Back To List</a>
+    </p>
+
     <form method="post" action="{{ action('ManageParticipantController@postEditSave',['id'=>$row->getId()]) }}">
         {!! csrf_field() !!}
         <div class="form-group">

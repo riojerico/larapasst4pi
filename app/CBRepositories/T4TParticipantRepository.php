@@ -12,4 +12,9 @@ class T4tParticipantRepository extends T4tParticipant
     {
         return new static(static::simpleQuery()->where("id", $participantId)->first());
     }
+
+    public static function findByEmail($email)
+    {
+        return new static(static::simpleQuery()->where('email', $email)->first());
+    }
 }

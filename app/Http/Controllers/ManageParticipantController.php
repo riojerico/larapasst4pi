@@ -9,6 +9,7 @@ use App\Helpers\FileHelper;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class ManageParticipantController extends Controller
 {
@@ -33,7 +34,8 @@ class ManageParticipantController extends Controller
         $data['currentMenu'] = 'Manage Participant';
         $data['pageTitle'] = 'Edit Participant';
         $data['row'] = Users::findById($id);
-        $data['participant'] = T4tParticipant::findById($data['row']->getT4tParticipantNo());
+        $data['participant'] = $data['row']->getT4tParticipantNo();
+
         return view('participant_edit', $data);
     }
 
@@ -77,7 +79,15 @@ class ManageParticipantController extends Controller
 
     public function getDelete($id)
     {
-        Users::findById($id);
-        return ResponseHelper::goBack("The data has been deleted!","success");
+        $user = Users::findById($id);
+        $user->delete();
+
+        T4tParticipant::deleteById($user->getT4tParticipantNo()->getNo());
+
+        DB::table("oauth_clients")->where("user_id", $user->getId())->delete();
+        DB::table("oauth_access_tokens")->where("user_id", $user->getId())->delete();
+        DB::table("oauth_auth_codes")->where("user_id", $user->getId())->delete();
+
+        return ResponseHelper::goBack("User ".$user->getName()." has been deleted!","success");
     }
 }

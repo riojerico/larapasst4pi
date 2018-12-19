@@ -55,7 +55,7 @@ class UsersService
 
         //insert to t4t_participant
         $participant = new T4tParticipant();
-        $participant->setId("EU".str_pad(T4tParticipant::getMaxId()+1,8,0, STR_PAD_LEFT));
+        $participant->setId("MF".str_pad(T4tParticipant::getMaxId()+1,8,0, STR_PAD_LEFT));
         $participant->setName($request->get("name"));
         $participant->setComment($request->get("comment"));
         $participant->setAddress($request->get("address"));
