@@ -14,6 +14,7 @@
 $this->post("api/login","ApiAuthController@issueToken");
 
 Route::middleware("auth:api")->prefix("api")->group(function () {
+
     $this->post("donor/update","ApiDonorController@postUpdate");
     $this->post("donor/create","ApiDonorController@postCreate");
     $this->get("donor/list", "ApiDonorCOntroller@getList");
