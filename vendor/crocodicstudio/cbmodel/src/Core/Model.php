@@ -136,14 +136,14 @@ class Model
 
             if (ends_with($column, '_id')) {
                 $relationTable = str_replace('_id', '', $column);
-                $relationTablePK = Helper::findPrimaryKey($relationTable, static::$connection);
                 if (Schema::hasTable($relationTable)) {
+                    $relationTablePK = Helper::findPrimaryKey($relationTable, static::$connection);
                     self::join($relationTable, $relationTablePK, '=', $tableName.'.'.$column);
                 }
             }elseif (starts_with($column, 'id_')) {
                 $relationTable = str_replace('id_', '', $column);
-                $relationTablePK = Helper::findPrimaryKey($relationTable, static::$connection);
                 if (Schema::hasTable($relationTable)) {
+                    $relationTablePK = Helper::findPrimaryKey($relationTable, static::$connection);
                     self::join($relationTable, $relationTablePK, '=', $tableName.'.'.$column);
                 }
             }
@@ -251,17 +251,17 @@ class Model
      */
     public static function findById($id)
     {
-        if($data = app("CBModelTemporary")->get(get_called_class(),"findById",$id)) {
-            return $data;
-        }
 
         self::init();
         self::$id = $id;
-        $row = new static(self::simpleQuery()->where(static::getPrimaryField(),$id)->first());
 
-        app("CBModelTemporary")->set(get_called_class(),"findById",$id,$row);
-
-        return $row;
+        if($data = app("CBModelTemporary")->get(get_called_class(),"findById",$id)) {
+            return new static($data);
+        }else{
+            $data = self::simpleQuery()->where(static::getPrimaryField(),$id)->first();
+            app("CBModelTemporary")->set(get_called_class(),"findById",$id,$data);
+            return new static($data);
+        }
     }
 
     public function toObject()

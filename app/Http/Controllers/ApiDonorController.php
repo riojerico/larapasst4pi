@@ -9,8 +9,11 @@ use App\CBModels\Trees4treesNode;
 use App\CBModels\Users;
 use App\CBRepositories\T4tParticipantRepository;
 use App\CBRepositories\Trees4treesFieldDataFieldLogoRepository;
+use App\CBRepositories\Trees4TreesFieldLogoRepository;
 use App\CBRepositories\Trees4treesNodeRepository;
+use App\CBServices\ApiLogService;
 use App\CBServices\DonorService;
+use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,8 +34,13 @@ class ApiDonorController extends Controller
 
     public function postCreate(Request $request)
     {
+        $blockedRequest = new BlockedRequestHelper($request);
         $user = $this->initUser();
+
         try {
+
+            $blockedRequest->checkPermanentBlockedRequest(3);
+
             $this->validate($request, [
                 'first_name' => 'required|string|min:3|max:99',
                 'last_name'=> 'required|string|min:3|max:99',
@@ -44,7 +52,7 @@ class ApiDonorController extends Controller
             $parentParticipant = $user->getT4tParticipantNo();
             $participant = DonorService::register($parentParticipant, $request);
             $participantNode = Trees4treesNodeRepository::findByParticipantID($participant->getId());
-            $participantLogo = Trees4TreesFieldLogo::findById($participantNode->getNid());
+            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
 
             $data = [];
             $data['id_user'] = $participant->getId();
@@ -55,18 +63,35 @@ class ApiDonorController extends Controller
             $data['join_date'] = $participant->getDateJoin();
             $data['photo'] = $participantLogo->getFieldLogoFid()->getUri();
 
+            //Save Log
+            ApiLogService::saveData([],$data,"CREATE NEW DONOR",200);
+
             return ResponseHelper::responseAPI(200,  "success", $data);
         } catch (ValidationException $e) {
+
+            //Save Log
+            ApiLogService::saveResponse($e->getMessage(),"VALIDATION EXCEPTION", 403);
+
+            $blockedRequest->hitBlockedTime();
             return ResponseHelper::responseAPI(403, $e->getMessage());
         } catch (\Exception $e) {
+
+            //Save Log
+            ApiLogService::saveResponse($e->getMessage(),"ERROR EXCEPTION", 403);
+
             return ResponseHelper::responseAPI(403, $e->getMessage());
         }
     }
 
     public function postUpdate(Request $request)
     {
+        $blockedRequest = new BlockedRequestHelper($request);
         $user = $this->initUser();
+
+        DB::beginTransaction();
         try {
+            $blockedRequest->checkPermanentBlockedRequest(3);
+
             $this->validate($request, [
                 'id_participant'=>'required|string',
                 'first_name' => 'string|min:3|max:99',
@@ -76,10 +101,16 @@ class ApiDonorController extends Controller
                 'photo'=>'image'
             ]);
 
+            $oldParticipant = T4tParticipantRepository::findByParticipantID(request('id_participant'));
+            $oldParticipantNode = Trees4treesNodeRepository::findByParticipantID($oldParticipant->getId());
+            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
+
             $parentParticipant = $user->getT4tParticipantNo();
             $participant = DonorService::update($request);
+            DB::commit();
+
             $participantNode = Trees4treesNodeRepository::findByParticipantID($participant->getId());
-            $participantLogo = Trees4TreesFieldLogo::findById($participantNode->getNid());
+            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
 
             $data = [];
             $data['id_user'] = $participant->getId();
@@ -90,10 +121,29 @@ class ApiDonorController extends Controller
             $data['join_date'] = $participant->getDateJoin();
             $data['photo'] = $participantLogo->getFieldLogoFid()->getUri();
 
+            //Save Log
+            ApiLogService::saveData([
+                'first_name'=> $oldParticipant->getName(),
+                'last_name'=> $oldParticipant->getLastname(),
+                'email'=> $oldParticipant->getEmail(),
+                'comment'=> $oldParticipant->getComment(),
+                'photo'=> $oldParticipantLogo->getFieldLogoFid()->getUri()
+            ], $data, "UPDATE DONOR", 200);
+
             return ResponseHelper::responseAPI(200,  "success", $data);
         } catch (ValidationException $e) {
+
+            //Save Log
+            ApiLogService::saveResponse($e->getMessage(),"VALIDATION EXCEPTION", 403);
+
+            $blockedRequest->hitBlockedTime();
             return ResponseHelper::responseAPI(403, $e->getMessage());
         } catch (\Exception $e) {
+
+            //Save Log
+            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
+
+            DB::rollBack();
             return ResponseHelper::responseAPI(403, $e->getMessage());
         }
     }

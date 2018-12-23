@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CBRepositories\UsersRepository;
+use App\Helpers\ValidationExceptionHelper;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\CBServices\UsersService;
@@ -50,13 +51,13 @@ class AuthController extends Controller
     {
         try {
             $this->validate($request, [
-                "name"=>"required|string|min:1|max:99",
-                "lastname"=>"required|string|min:1|max:99",
-                "comment"=>"string|string|min:1|max:255",
-                "address"=>"required|string|min:max:255",
-                "photo"=>"required|image",
-                "email" => "unique:users|email",
+                "email" => "exists:mysql_t4t_t4t.t4t_participant|email",
+                'captcha'=>'required|captcha',
                 "password" => "required|string"
+            ],[
+                'email.exists'=>"Email you entered is not found",
+                'captcha.captcha'=>'Enter the captcha correctly',
+                'password.required'=>'Please enter the password'
             ]);
 
             UsersService::register($request);
@@ -65,6 +66,9 @@ class AuthController extends Controller
                 ->with(['message'=>"Your registration has been success, you can now login!","message_type"=>"success"]);
 
         } catch (ValidationException $e) {
+
+            return redirect()->back()->with(['message'=>ValidationExceptionHelper::errorsToString($e->errors()),'message_type'=>'warning']);
+        } catch (\Exception $e) {
             return redirect()->back()->with(['message'=>$e->getMessage(),'message_type'=>'warning']);
         }
     }

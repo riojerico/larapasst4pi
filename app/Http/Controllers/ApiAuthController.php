@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\CBModels\ApiLogs;
+use App\CBServices\ApiLogService;
+use App\Helpers\BlockedRequestHelper;
+use App\Helpers\ResponseHelper;
+use App\Http\Middleware\ApiLog;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Response;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,9 +16,17 @@ use Psr\Http\Message\ServerRequestInterface;
 class ApiAuthController extends AccessTokenController
 {
 
-    public function issueToken(ServerRequestInterface $request)
+    public function login(ServerRequestInterface $request)
     {
+        $blockedRequest = new BlockedRequestHelper(request());
+
         try {
+            //Check Permanent Blocked Request
+            $blockedRequest->checkPermanentBlockedRequest();
+
+            //Check Temporary Blocked Request
+            $blockedRequest->checkBlockedRequest();
+
             //get username (default is :email)
             $username = $request->getParsedBody()['username'];
 
@@ -26,7 +38,6 @@ class ApiAuthController extends AccessTokenController
 
             //convert response to json string
             $content = $tokenResponse->getContent();
-//            $content = $tokenResponse->getBody()->__toString();
 
             //convert json to array
             $data = json_decode($content, true);
@@ -34,29 +45,71 @@ class ApiAuthController extends AccessTokenController
             if(isset($data["error"]))
                 throw new OAuthServerException('The user credentials were incorrect.', 6, 'invalid_credentials', 401);
 
-            //add access token to user
-            $user = collect($user);
-            $user->put('access_token', $data['access_token']);
 
-            return response()->json([
-                'status'=>200,
-                'message'=>'success',
-                'access_token'=> $data['access_token'],
-                'refresh_token'=> $data['refresh_token'],
-                'data'=>$user
+            //Save Log
+            $log = new ApiLogs();
+            $log->setName(basename(request()->url()));
+            $log->setUrl(request()->fullUrl());
+            $log->setIp(request()->ip());
+            $log->setUseragent(request()->header('User-Agent'));
+            $log->setRequestData(json_encode(request()->all()));
+            $log->setResponseCode(200);
+            $log->save();
+
+
+            return ResponseHelper::responseAPI(200,'success',null,[
+                'access_token'=>$data['access_token'],
+                'refresh_token'=>$data['refresh_token']
             ]);
         }
-        catch (ModelNotFoundException $e) { // email notfound
+        catch (ModelNotFoundException $e) {
             //return error message
-            return response()->json(['status'=>403,'message'=>$e->getMessage()], 403);
+
+            //Save Log
+            $log = new ApiLogs();
+            $log->setName(basename(request()->url()));
+            $log->setDescription("USER NOT FOUND");
+            $log->setUrl(request()->fullUrl());
+            $log->setIp(request()->ip());
+            $log->setUseragent(request()->header('User-Agent'));
+            $log->setRequestData(json_encode(request()->all()));
+            $log->setResponseCode(403);
+            $log->save();
+
+            return ResponseHelper::responseAPI(403,$e->getMessage());
         }
         catch (OAuthServerException $e) { //password not correct..token not granted
             //return error message
-            return response()->json(['status'=>401,'message'=>$e->getMessage()], 401);
+
+            //Save Log
+            ApiLogService::saveEvent("FAILED CREDENTIAL",401);
+
+            $blockedRequest->hitRequest();
+            return ResponseHelper::responseAPI(401, $e->getMessage());
         }
         catch (\Exception $e) {
             ////return error message
-            return response()->json(['status'=>400,'message'=>$e->getMessage()],400);
+            if($e->getMessage() == "TEMPORARY_BLOCKED_REQUEST") {
+
+                //Save Log
+                ApiLogService::saveEvent("TEMPORARY BLOCKED REQUEST", 400);
+
+                return ResponseHelper::responseAPI(400,'Too many failed request, please wait for 30 minutes');
+            }elseif ($e->getMessage() == "PERMANENT_BLOCKED_REQUEST") {
+
+                //Save Log
+                ApiLogService::saveEvent("PERMANENT BLOCKED REQUEST", 400);
+
+                return ResponseHelper::responseAPI(400,'You have been blocked, please contact Admin');
+            }else{
+
+                //Save Log
+                ApiLogService::saveResponse($e->getTraceAsString(),"ERROR",400);
+
+                return ResponseHelper::responseAPI(400,$e->getMessage());
+            }
         }
     }
+
+
 }

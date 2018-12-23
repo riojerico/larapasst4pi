@@ -11,9 +11,11 @@
 |
 */
 
-$this->post("api/login","ApiAuthController@issueToken");
+Route::middleware(["api"])->prefix("api")->group(function () {
+    $this->post("login","ApiAuthController@login");
+});
 
-Route::middleware("auth:api")->prefix("api")->group(function () {
+Route::middleware(["auth:api"])->prefix("api")->group(function () {
 
     $this->post("donor/update","ApiDonorController@postUpdate");
     $this->post("donor/create","ApiDonorController@postCreate");
@@ -22,7 +24,18 @@ Route::middleware("auth:api")->prefix("api")->group(function () {
 
 Route::prefix(config("app.admin_path"))->group(function () {
 
+    $this->get("blocked-request/delete/{id}", "BlockedRequestController@getDelete");
+    $this->get("blocked-request", "BlockedRequestController@getIndex");
+
+    $this->get("activity-log/detail/{id}", "ActivityLogController@getDetail");
     $this->get("activity-log", "ActivityLogController@getIndex");
+
+    $this->post('manage-user/add-save','AdminUserController@postAddSave');
+    $this->get('manage-user/add','AdminUserController@getAdd');
+    $this->post('manage-user/edit-save/{id}', 'AdminUserController@postEditSave');
+    $this->get("manage-user/edit/{id}", "AdminUserController@getEdit");
+    $this->get('manage-user/delete/{id}', 'AdminUserController@getDelete');
+    $this->get("manage-user", "AdminUserController@getIndex");
 
     $this->post('manage-participant/edit-save/{id}', 'ManageParticipantController@postEditSave');
     $this->get("manage-participant/edit/{id}", "ManageParticipantController@getEdit");

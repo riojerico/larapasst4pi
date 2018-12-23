@@ -18,11 +18,14 @@
 
 <body>
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">T4T Web API</a>
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">T4T Web API Console</a>
     {{--<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">--}}
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-            <a class="nav-link" href="{{ action("AuthController@getLogout") }}">Sign out</a>
+            <a class="nav-link" href="{{ action("AuthController@getLogout") }}">
+                Hi {{ auth()->user()->name }},
+                <strong title="Click here to sign out">Sign out</strong>
+            </a>
         </li>
     </ul>
 </nav>
@@ -47,9 +50,21 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ $currentMenu=='Blocked Request'?'active':'' }}" href="{{ action('BlockedRequestController@getIndex') }}">
+                            <span data-feather="file-text"></span>
+                            Blocked Request
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ $currentMenu=='Activity Log'?'active':'' }}" href="{{ action('ActivityLogController@getIndex') }}">
                             <span data-feather="file-text"></span>
                             Activity Log
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ $currentMenu=='User Admin'?'active':'' }}" href="{{ action('AdminUserController@getIndex') }}">
+                            <span data-feather="user"></span>
+                            Manage Admin User
                         </a>
                     </li>
                     @endif

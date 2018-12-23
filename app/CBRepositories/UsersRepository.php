@@ -8,6 +8,11 @@ class UsersRepository extends Users
 {
     // TODO : Make you own query methods
 
+    public static function findAllAdminPagination($limit = 20)
+    {
+        return static::simpleQuery()->where('role','Superadmin')->orderby('id','desc')->paginate($limit);
+    }
+
     public static function findByEmail(string $email)
     {
         return new static(static::table()->where("email", $email)->first());

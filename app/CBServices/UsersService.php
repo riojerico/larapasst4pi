@@ -11,6 +11,7 @@ namespace App\CBServices;
 
 use App\CBModels\T4tParticipant;
 use App\CBModels\Users;
+use App\CBRepositories\T4tParticipantRepository;
 use App\CBRepositories\UsersRepository;
 use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
@@ -54,23 +55,13 @@ class UsersService
         $photo = FileHelper::uploadFile("photo");
 
         //insert to t4t_participant
-        $participant = new T4tParticipant();
-        $participant->setId("MF".str_pad(T4tParticipant::getMaxId()+1,8,0, STR_PAD_LEFT));
-        $participant->setName($request->get("name"));
-        $participant->setComment($request->get("comment"));
-        $participant->setAddress($request->get("address"));
-        $participant->setPhone("000");
-        $participant->setFax("000");
-        $participant->setDirector("NA");
-        $participant->setPic("NA");
-        $participant->setProduct("NA");
-        $participant->setMaterial("NA");
-        $participant->setOutletQty(0);
-        $participant->setLastname($request->get("lastname"));
-        $participant->setEmail($request->get("email"));
-        $participant->setDateJoin(date("Y-m-d H:i:s"));
-        $participant->setType("Donor");
-        $participant->save();
+        $participant = T4tParticipantRepository::findByEmail($request->get("email"));
+
+        if($exist = UsersRepository::findByEmail($request->get("email"))) {
+            if($exist->getId()) {
+                throw new \Exception("You have already registered before!");
+            }
+        }
 
         $user = new Users();
         $user->setRole("Participant");

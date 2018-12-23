@@ -9,42 +9,26 @@
             </div>
         @endif
 
-        <h1 class="h3 mb-3 font-weight-normal">REGISTER T4T WEB API</h1>
+        <h1 class="h3 mb-3 font-weight-normal">REGISTER API FOR PARTICIPANT</h1>
         <hr>
-
-        <div class="form-group">
-            <label for="" style="text-align: left;display: block">Name</label>
-            <input type="text" class="form-control" name="name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="" style="text-align: left;display: block">Last Name</label>
-            <input type="text" class="form-control" name="lastname" required>
-        </div>
-
-        <div class="form-group">
-            <label for="" style="text-align: left;display: block">Address</label>
-            <input type="text" class="form-control" name="address" required>
-        </div>
-
-        <div class="form-group">
-            <label for="" style="text-align: left;display: block">Comment</label>
-            <input type="text" class="form-control" name="comment" required>
-        </div>
-
-        <div class="form-group">
-            <label for="" style="text-align: left;display: block">Photo</label>
-            <input type="file" class="form-control" name="photo" required>
-        </div>
 
         <div class="form-group">
             <label for="" style="text-align: left;display: block">Email</label>
             <input type="email" class="form-control" name="email" required>
+            <div class="help-block">Input your registered email at T4T</div>
         </div>
 
         <div class="form-group">
             <label for="" style="text-align: left;display: block">Password</label>
             <input type="password" class="form-control" name="password" required>
+            <div class="help-block">Enter a new password</div>
+        </div>
+
+        <div class="form-group">
+            <label for="" style="text-align: left;display: block">Captcha</label>
+            <p><img src="{!! captcha_src() !!}" alt=""></p>
+            <input type="text" class="form-control" name="captcha" required >
+            <div class="help-block">Enter the text image shown</div>
         </div>
 
         <p></p>
