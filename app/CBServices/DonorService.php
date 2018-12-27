@@ -138,7 +138,7 @@ class DonorService
             }
 
             //Save Trees4treesParticipantName
-            DB::table("trees_trees4trees.trees4trees_field_participant_name")
+            DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
             ->insert([
                 'entity_type'=>'node',
                 'bundle'=>'see_your_trees_api',
