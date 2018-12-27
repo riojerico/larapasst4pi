@@ -51,9 +51,6 @@ class UsersService
 
     public static function register(Request $request)
     {
-
-        $photo = FileHelper::uploadFile("photo");
-
         //insert to t4t_participant
         $participant = T4tParticipantRepository::findByEmail($request->get("email"));
 
@@ -65,9 +62,8 @@ class UsersService
 
         $user = new Users();
         $user->setRole("Participant");
-        $user->setName($request->name);
-        $user->setEmail($request->email);
-        $user->setPhoto($photo);
+        $user->setName($participant->getName());
+        $user->setEmail($participant->getEmail());
         $user->setT4tParticipantNo($participant->getNo());
         $user->setPassword(Hash::make($request->password));
         $user->save();
