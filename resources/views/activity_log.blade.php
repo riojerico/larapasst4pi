@@ -20,9 +20,9 @@
                 <td>{{ $row->created_at }}</td>
                 <td>{{ $row->response_code }}</td>
                 <td>{{ $row->name }}</td>
-                <td>{{ $row->description }}</td>
-                <td>{{ $row->useragent }}</td>
                 <td>{{ $row->ip }}</td>
+                <td>{{ $row->useragent }}</td>
+                <td>{{ $row->description }}</td>
                 <td>
                     <a href="{{ action('ActivityLogController@getDetail',['id'=>$row->id]) }}" class="btn btn-primary btn-sm">Detail</a>
                 </td>
