@@ -157,9 +157,11 @@ class ApiDonorController extends Controller
                 'email' => 'email'
             ]);
 
+            $parentID = $user->getT4tParticipantNo()->getId();
+
             $data = DB::table("view_donor_details")
-                ->join("view_donor_total_tree as a","a.id_user","=","view_donor_details.id_user")
-                ->where("view_donor_details.id_part", $user->getT4tParticipantNo()->getId())
+                ->leftjoin("view_donor_total_tree as a","a.id_user","=","view_donor_details.id_user")
+                ->where("view_donor_details.id_part", $parentID)
                 ->select("view_donor_details.*","a.total_tree")
                 ->get();
 

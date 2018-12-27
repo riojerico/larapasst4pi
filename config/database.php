@@ -54,6 +54,9 @@ return [
             'prefix_indexes' => true,
             'strict' => false,
             'engine' => null,
+            'options'   => [
+                \PDO::ATTR_EMULATE_PREPARES => true
+            ]
         ],
 
         'mysql_trees_trees4trees' => [
@@ -70,6 +73,9 @@ return [
             'prefix_indexes' => true,
             'strict' => false,
             'engine' => null,
+            'options'   => [
+                \PDO::ATTR_EMULATE_PREPARES => true
+            ]
         ],
 
         'mysql_t4t_t4t' => [
@@ -86,6 +92,9 @@ return [
             'prefix_indexes' => true,
             'strict' => false,
             'engine' => null,
+            'options'   => [
+                \PDO::ATTR_EMULATE_PREPARES => true
+            ]
         ],
 
         'mysql' => [
@@ -102,6 +111,9 @@ return [
             'prefix_indexes' => true,
             'strict' => false,
             'engine' => null,
+            'options'   => [
+                \PDO::ATTR_EMULATE_PREPARES => true
+            ]
         ],
 
         'pgsql' => [
