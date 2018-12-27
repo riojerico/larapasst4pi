@@ -12,4 +12,9 @@ class OauthClientsRepository extends OauthClients
     {
         return new static(static::simpleQuery()->where("secret", $key)->first());
     }
+
+    public static function setPasswordGrant($id)
+    {
+        static::simpleQuery()->where('id',$id)->update(['password_client'=>1]);
+    }
 }

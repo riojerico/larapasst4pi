@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CBModels\ApiLogs;
+use App\CBRepositories\OauthClientsRepository;
 use App\CBServices\ApiLogService;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
@@ -29,9 +30,14 @@ class ApiAuthController extends AccessTokenController
 
             //get username (default is :email)
             $username = $request->getParsedBody()['username'];
+            $clientID = $request->getParsedBody()['client_id'];
 
             //get user
             $user = User::where('email', '=', $username)->firstOrFail();
+
+            if($user) {
+                OauthClientsRepository::setPasswordGrant($clientID);
+            }
 
             //issuetoken
             $tokenResponse = parent::issueToken($request);

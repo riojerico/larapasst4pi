@@ -55,14 +55,10 @@ class ManageParticipantController extends Controller
                 $user->setPassword(\Hash::make(request('password')));
             }
 
-            if(request()->hasFile('photo')) {
-                $user->setPhoto(FileHelper::uploadFile('photo'));
-            }
-
             $user->save();
 
             //Update t4t participant
-            $participant = T4tParticipant::findById($user->getT4tParticipantNo());
+            $participant = T4tParticipant::findById($user->getT4tParticipantNo()->getNo());
             $participant->setName($user->getName());
             $participant->setLastname(request('lastname'));
             $participant->setEmail($user->getEmail());
