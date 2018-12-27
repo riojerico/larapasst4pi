@@ -7,9 +7,9 @@
             <tr>
                 <th>CREATED</th>
                 <th>STATUS</th>
-                <th>USER AGENT</th>
-                <th>IP</th>
                 <th>NAME</th>
+                <th>IP</th>
+                <th>USER AGENT</th>
                 <th>DESCRIPTION</th>
                 <th>DETAIL</th>
             </tr>
