@@ -72,12 +72,20 @@ class DonorService
             $participant->save();
 
             //insert to t4t_idrelation
-            $repeatId = T4tIdrelationRepository::getNewRepeatId($parentParticipant->getId());
-            $t4tRelation = new T4tIdrelation();
-            $t4tRelation->setIdPart($parentParticipant->getId());
-            $t4tRelation->setRelatedPart($participantID);
-            $t4tRelation->setRepeatId($repeatId);
-            $t4tRelation->save();
+            $lastRelation = DB::table("t4t_t4t.t4t_idrelation")
+                ->where("id_part", $parentParticipant->getId())
+                ->orderBy("no","desc")
+                ->first();
+            if($lastRelation) {
+                $repeatId = $lastRelation->repeat_id + 1;
+            }else{
+                $repeatId = 1;
+            }
+            DB::table("t4t_t4t.t4t_idrelation")->insert([
+                "id_part"=>$parentParticipant->getId(),
+                "related_part"=>$participantID,
+                "repeat_id"=>$repeatId
+            ]);
 
             //insert t4t_web.participant
             DB::table("t4t_web.participants")->insert([
