@@ -31,7 +31,6 @@ class ApiTreeController extends ApiController
             $blockedRequest->checkPermanentBlockedRequest(3);
 
             $this->validate($request,[
-                'id_part_from'=>'required|string|exist:t4t_t4t.t4t_participant,id',
                 'id_part_to'=>'required|string|exist:t4t_t4t.t4t_participant,id',
                 'id_pohon'=>'integer',
                 'quantity'=>'required|integer'
@@ -39,7 +38,7 @@ class ApiTreeController extends ApiController
 
 
             //Find the wins of id_part_from
-            $id_part_from = $request->get('id_part_from');
+            $id_part_from = $user->getT4tParticipantNo()->getId();
             $id_part_to = $request->get('id_part_to');
             $id_pohon = $request->get('id_pohon');
             $qty = $request->get('quantity');
@@ -51,7 +50,6 @@ class ApiTreeController extends ApiController
             $data['date_donated'] = date('Y-m-d H:i:s');
             $data['quantity'] = $qty;
             $data['id_pohon'] = $id_pohon;
-            $data['id_part_from'] = $id_part_from;
             $data['id_part_to'] = $id_part_to;
             $data['no_trans'] = $trans->no_transaction;
 

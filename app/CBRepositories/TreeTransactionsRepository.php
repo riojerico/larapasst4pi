@@ -15,7 +15,14 @@ class TreeTransactionsRepository extends TreeTransactions
         $data->whereBetween(DB::raw("DATE(created_at)"),[$dateFrom,$dateUntil]);
         $data->join('t4t_t4t.t4t_pohon as a','a.id_pohon','=','tree_transactions.id_pohon');
         $data->orderby('tree_transactions.id','desc');
-        $data->select('tree_transactions.*','a.nama_pohon','a.nama_latin');
+        $data->select(
+            'tree_transactions.id',
+            'tree_transactions.no_transaction',
+            'tree_transactions.created_at',
+            'tree_transactions.quantity',
+            'tree_transactions.id_pohon',
+            'a.nama_pohon',
+            'a.nama_latin');
         return $data->get();
     }
 }
