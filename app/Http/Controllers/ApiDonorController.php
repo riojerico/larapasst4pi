@@ -20,16 +20,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-class ApiDonorController extends Controller
+class ApiDonorController extends ApiController
 {
     public function __construct()
     {
         $this->middleware("auth:api");
-    }
-
-    private function initUser()
-    {
-        return Users::findById(Auth::id());
     }
 
     public function postCreate(Request $request)

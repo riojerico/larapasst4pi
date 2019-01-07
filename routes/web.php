@@ -11,12 +11,19 @@
 |
 */
 
+Route::middleware(["api"])->prefix("oauth")->group(function () {
+    $this->post("token","ApiAuthController@login");
+});
+
 Route::middleware(["api"])->prefix("api")->group(function () {
     $this->post("login","ApiAuthController@login");
 });
 
 Route::middleware(["auth:api"])->prefix("api")->group(function () {
 
+    $this->post("tree/assign","ApiTreeController@postAssignTree");
+    $this->get("tree/history-transaction","ApiTreeController@getHistoryTransaction");
+    $this->get("tree/stock","ApiTreeController@getStock");
     $this->post("donor/update","ApiDonorController@postUpdate");
     $this->post("donor/create","ApiDonorController@postCreate");
     $this->get("donor/list", "ApiDonorCOntroller@getList");
