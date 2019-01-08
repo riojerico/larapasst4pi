@@ -31,7 +31,7 @@ class ApiTreeController extends ApiController
             $blockedRequest->checkPermanentBlockedRequest(3);
 
             $this->validate($request,[
-                'id_part_to'=>'required|string|exist:t4t_t4t.t4t_participant,id',
+                'id_part_to'=>'required|string|exists:t4t_t4t.t4t_participant,id',
                 'id_pohon'=>'integer',
                 'quantity'=>'required|integer'
             ]);
