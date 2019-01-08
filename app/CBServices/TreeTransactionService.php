@@ -29,13 +29,14 @@ class TreeTransactionService
     {
         //Save Transaction
         $noTrans = str_pad(TreeTransactions::getMaxId()+1,5,0,STR_PAD_LEFT);
-        $trans = new TreeTransactions();
-        $trans->setNoTransaction($noTrans);
-        $trans->setQuantity($qty);
-        $trans->setIdPartFrom($id_part_from);
-        $trans->setIdPartTo($id_part_to);
-        $trans->setIdPohon($id_pohon);
-        $trans->save();
+
+        $transId = DB::table("tree_transactions")->insertGetId([
+            'no_transaction'=>$noTrans,
+            'quantity'=>$qty,
+            'id_part_from'=>$id_part_from,
+            'id_part_to'=>$id_part_to,
+            'id_pohon'=>$id_pohon
+        ]);
 
         //Find All Wins Of Participant From
         $partTo = T4tParticipantRepository::findByParticipantID($id_part_to);
@@ -43,34 +44,36 @@ class TreeTransactionService
         foreach($wins as $win)
         {
             //Update Win
-            $update = T4tWins::findById($win->no);
-            $update->setIdRetailer($id_part_to);
-            $update->setRelation(1);
-            $update->setIdApiTrans($trans->getId());
-            $update->save();
+            DB::table("t4t_t4t.t4t_wins")
+            ->where('no',$win->no)
+            ->update([
+               'id_retailer'=>$id_part_to,
+               'relation'=>1,
+               'id_api_trans'=>$transId
+            ]);
 
             //Get Detail
             $stock = ViewTreeStockDetailsRepository::findByShipment($win->no_shipment);
             $htc = DB::table("t4t_t4t.t4t_htc")->where("no_shipment", $win->no_shipment)
                 ->first();
             //Save To Planting Maps
-            $map = new PlantingMaps();
-            $map->setIdMapdata($htc->no);
-            $map->setIdPart($id_part_to);
-            $map->setGeo($stock->koordinat);
-            $map->setName($partTo->getName());
-            $map->setTotalTrees(1);
-            $map->setIdShipment($win->no_shipment);
-            $map->setSpecies($stock->nama_latin);
-            $map->setArea($stock->luas_tanam);
-            $map->setVillage($stock->desa);
-            $map->setDistrict($stock->ta);
-            $map->setMunicipality($stock->mu);
-            $map->setFarmer($stock->nm_petani);
-            $map->setPlantingYear($stock->thn_tanam);
-            $map->save();
+            DB::table("t4t_web.planting_maps")->insert([
+               'id_map_data'=>$htc->no,
+               'id_part'=>$id_part_to,
+               'geo'=>$stock->koordinat,
+               'name'=>$partTo->getName(),
+               'total_trees'=>1,
+               'id_shipment'=>$win->no_shipment,
+               'species'=>$stock->nama_latin,
+               'area'=>$stock->luas_tanam,
+               'village'=>$stock->desa,
+               'district'=>$stock->ta,
+               'municipality'=>$stock->mu,
+               'farmer'=>$stock->nm_petani,
+               'planting_year'=>$stock->thn_tanam
+            ]);
         }
 
-        return $trans->getId();
+        return $transId;
     }
 }
