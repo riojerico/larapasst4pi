@@ -32,6 +32,7 @@ class TreeTransactionService
         $noTrans = str_pad(TreeTransactions::getMaxId()+1,5,0,STR_PAD_LEFT);
 
         $transId = DB::table("tree_transactions")->insertGetId([
+            'created_at'=>date('Y-m-d H:i:s'),
             'no_transaction'=>$noTrans,
             'quantity'=>$qty,
             'id_part_from'=>$id_part_from,
