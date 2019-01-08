@@ -17,12 +17,9 @@ class T4tPohon extends Model
 	private $jarakTanam;
 
 
-    
-	/**
-	* @return Pohon
-	*/
+
 	public function getIdPohon() {
-		return Pohon::findById($this->idPohon);
+		return $this->idPohon;
 	}
 
 	public function setIdPohon($idPohon) {
