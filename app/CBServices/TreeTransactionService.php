@@ -59,7 +59,7 @@ class TreeTransactionService
                 ->first();
             //Save To Planting Maps
             DB::table("t4t_web.planting_maps")->insert([
-               'id_map_data'=>$htc->no,
+               'id_mapdata'=>$htc->no,
                'id_part'=>$id_part_to,
                'geo'=>$stock->koordinat,
                'name'=>$partTo->getName(),
