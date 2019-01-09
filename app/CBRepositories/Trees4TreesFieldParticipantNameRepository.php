@@ -10,6 +10,6 @@ class Trees4TreesFieldParticipantNameRepository extends Trees4TreesFieldParticip
 
     public static function findByEntityId($entity_id)
     {
-        return static(static::simpleQuery()->where("entity_id", $entity_id)->first());
+        return new static(static::simpleQuery()->where("entity_id", $entity_id)->first());
     }
 }

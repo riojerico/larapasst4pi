@@ -185,12 +185,15 @@ class DonorService
 
             //insert trees4trees_node
             $node = Trees4treesNodeRepository::findByParticipantID($participant->getId());
-            $node->setChanged(time());
-            $node->save();
+
+            DB::table("trees_trees4trees.trees4trees_node")
+                ->where("title", $participant->getId())
+                ->update(['changed'=>time()]);
 
             if($request->hasFile("photo")) {
                 $photo = $request->file("photo");
                 $photoURL = FileHelper::uploadFile("photo");
+                $fliename = $_FILES['photo']['name'];
                 $imagedetails = getimagesize($_FILES['photo']['tmp_name']);
                 $width = $imagedetails[0];
                 $height = $imagedetails[1];
@@ -205,19 +208,24 @@ class DonorService
                 $fileManaged->save();
 
                 //Save Trees4Trees Logo
-                $logo = Trees4TreesFieldLogoRepository::findByEntityId($node->getNid());
-                $logo->setFieldLogoFid($fileManaged->getFid());
-                $logo->setFieldLogoAlt($photo->getFilename());
-                $logo->setFieldLogoTitle($photo->getFilename());
-                $logo->setFieldLogoHeight($height);
-                $logo->setFieldLogoWidth($width);
-                $logo->save();
+                DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+                ->where("entity_id", $node->getNid())
+                ->update([
+                    'field_logo_fid'=>$fileManaged->getFid(),
+                    'field_logo_alt'=>$fliename,
+                    'field_logo_title'=>$fliename,
+                    'field_logo_height'=>$height,
+                    'field_logo_width'=>$width
+                ]);
             }
 
             //Save Trees4treesParticipantName
-            $treesParticipant = Trees4TreesFieldParticipantNameRepository::findByEntityId($node->getNid());
-            $treesParticipant->setFieldParticipantNameValue($participant->getName());
-            $treesParticipant->save();
+            DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
+                ->where("entity_id", $node->getNid())
+                ->update([
+                    'field_participant_name_value'=>$participant->getName()
+                ]);
+
             DB::commit();
             return $participant;
         }catch (\Exception $e) {
