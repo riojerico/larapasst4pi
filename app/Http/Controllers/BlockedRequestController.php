@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CBModels\BlockedRequests;
 use App\CBRepositories\BlockedRequestsRepository;
+use App\Helpers\BlockedRequestHelper;
 use Illuminate\Http\Request;
 
 class BlockedRequestController extends Controller
@@ -22,8 +23,14 @@ class BlockedRequestController extends Controller
         return view('blocked_request', $data);
     }
 
-    public function getDelete($id)
+    public function getDelete(Request $request, $id)
     {
+        $data = BlockedRequests::findById($id);
+
+        //Unblock
+        $block = new BlockedRequestHelper($request);
+        $block->unblockRequest($data->getIp());
+
         BlockedRequests::deleteById($id);
         return redirect()->back()->with(['message'=>'Unblock success!','message_type'=>'success']);
     }

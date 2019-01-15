@@ -32,7 +32,11 @@ class BlockedRequestHelper
     private function requestSignature($request)
     {
         $route = $request->route();
-        return sha1($route->getDomain().'|'.$request->ip());
+        return $this->hashSignature($route->getDomain(), $request->ip());
+    }
+
+    private function hashSignature($domain, $ip) {
+        return sha1($domain.'|'.$ip);
     }
 
     /**
@@ -64,6 +68,12 @@ class BlockedRequestHelper
         }else{
             $this->blockRequest();
         }
+    }
+
+    public function unblockRequest($ip)
+    {
+        $key = $this->hashSignature($this->request->route()->getDomain(), $ip);
+        Cache::forget($key);
     }
 
     public function requestTime()
