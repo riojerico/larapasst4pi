@@ -4,7 +4,7 @@ namespace App\CBModels;
 use DB;
 use Crocodicstudio\Cbmodel\Core\Model;
 
-class Trees4treesFileManaged extends Model
+class Trees4TreesFileManaged extends Model
 {
     public static $tableName = "trees4trees_file_managed";
 

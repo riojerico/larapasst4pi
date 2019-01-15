@@ -9,15 +9,7 @@
 namespace App\CBServices;
 
 
-use App\CBModels\T4tParticipant;
-use App\CBModels\Users;
-use App\CBRepositories\T4tParticipantRepository;
-use App\CBRepositories\UsersRepository;
 use App\CBRepositories\ViewTreeStockDetailsRepository;
-use App\Helpers\FileHelper;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class ViewTreeStockDetailsService
 {

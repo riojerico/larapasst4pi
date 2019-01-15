@@ -8,28 +8,15 @@
 
 namespace App\CBServices;
 
-
-use App\CBModels\T4tIdrelation;
-use App\CBModels\T4tParticipant;
-use App\CBModels\T4TWebParticipant;
-use App\CBModels\Trees4treesFieldDataFieldLogo;
-use App\CBModels\Trees4TreesFieldLogo;
-use App\CBModels\Trees4TreesFieldParticipantName;
-use App\CBModels\Trees4treesFileManaged;
-use App\CBModels\Trees4treesNode;
-use App\CBModels\Users;
-use App\CBRepositories\T4tIdrelationRepository;
-use App\CBRepositories\T4tParticipantRepository;
-use App\CBRepositories\Trees4TreesFieldLogoRepository;
-use App\CBRepositories\Trees4TreesFieldParticipantNameRepository;
-use App\CBRepositories\Trees4treesNodeRepository;
-use App\CBRepositories\UsersRepository;
+use App\CBModels\T4TParticipant;
+use App\CBModels\Trees4TreesFileManaged;
+use App\CBModels\Trees4TreesNode;
+use App\CBRepositories\T4TParticipantRepository;
+use App\CBRepositories\Trees4TreesNodeRepository;
 use App\Helpers\FileHelper;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class DonorService
 {
@@ -42,7 +29,7 @@ class DonorService
      */
     public static function register($parentParticipant, Request $request)
     {
-        $partByMail = T4tParticipantRepository::findByEmail($request->get("email"));
+        $partByMail = T4TParticipantRepository::findByEmail($request->get("email"));
         if($partByMail->getId()) {
             throw new \Exception("The email has been already exists!");
         }
@@ -51,9 +38,9 @@ class DonorService
         DB::beginTransaction();
         try{
 
-            $participantID = "EU".str_pad(T4tParticipant::getMaxId()+1,8,0, STR_PAD_LEFT);
+            $participantID = "EU".str_pad(T4TParticipant::getMaxId()+1,8,0, STR_PAD_LEFT);
 
-            $participant = new T4tParticipant();
+            $participant = new T4TParticipant();
             $participant->setId($participantID);
             $participant->setName($request->get("first_name"));
             $participant->setComment($request->get("comment"));
@@ -96,7 +83,7 @@ class DonorService
             ]);
 
             //insert trees4trees_node
-            $node = new Trees4treesNode();
+            $node = new Trees4TreesNode();
             $node->setTitle($participantID);
             $node->setType("your_trees_wincheck_configuratio");
             $node->setLanguage('und');
@@ -119,7 +106,7 @@ class DonorService
                 $fliename = $_FILES['photo']['name'];
                 $width = $imagedetails[0];
                 $height = $imagedetails[1];
-                $fileManaged = new Trees4treesFileManaged();
+                $fileManaged = new Trees4TreesFileManaged();
                 $fileManaged->setFilename($fliename);
                 $fileManaged->setFilemime($photo->getMimeType());
                 $fileManaged->setFilesize($photo->getSize());
@@ -167,7 +154,7 @@ class DonorService
 
     /**
      * @param Request $request
-     * @return T4tParticipant
+     * @return T4TParticipant
      * @throws \Exception
      */
     public static function update(Request $request)
@@ -175,7 +162,7 @@ class DonorService
         DB::beginTransaction();
         try{
             //Insert to t4t_participant
-            $participant = T4tParticipantRepository::findByParticipantID($request->get('id_participant'));
+            $participant = T4TParticipantRepository::findByParticipantID($request->get('id_participant'));
             if($request->get("first_name")) $participant->setName($request->get("first_name"));
             if($request->get("comment")) $participant->setComment($request->get("comment"));
             if($request->get("last_name")) $participant->setLastname($request->get("last_name"));
@@ -184,7 +171,7 @@ class DonorService
 
 
             //insert trees4trees_node
-            $node = Trees4treesNodeRepository::findByParticipantID($participant->getId());
+            $node = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
 
             DB::table("trees_trees4trees.trees4trees_node")
                 ->where("title", $participant->getId())
@@ -197,7 +184,7 @@ class DonorService
                 $imagedetails = getimagesize($_FILES['photo']['tmp_name']);
                 $width = $imagedetails[0];
                 $height = $imagedetails[1];
-                $fileManaged = new Trees4treesFileManaged();
+                $fileManaged = new Trees4TreesFileManaged();
                 $fileManaged->setFilename($photo->getFilename());
                 $fileManaged->setUri($photoURL);
                 $fileManaged->setFilemime($photo->getMimeType());

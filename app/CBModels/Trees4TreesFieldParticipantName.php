@@ -48,10 +48,10 @@ class Trees4TreesFieldParticipantName extends Model
 	}
 
 	/**
-	* @return Trees4treesNode
+	* @return Trees4TreesNode
 	*/
 	public function getEntityId() {
-		return Trees4treesNode::findById($this->entityId);
+		return Trees4TreesNode::findById($this->entityId);
 	}
 
 	public function setEntityId($entityId) {

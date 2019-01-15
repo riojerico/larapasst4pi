@@ -8,20 +8,10 @@
 
 namespace App\CBServices;
 
-
-use App\CBModels\PlantingMaps;
-use App\CBModels\T4tParticipant;
-use App\CBModels\T4tWins;
 use App\CBModels\TreeTransactions;
-use App\CBModels\Users;
-use App\CBRepositories\T4tParticipantRepository;
-use App\CBRepositories\T4tWinsRepository;
-use App\CBRepositories\UsersRepository;
+use App\CBRepositories\T4TParticipantRepository;
+use App\CBRepositories\T4TWinsRepository;
 use App\CBRepositories\ViewTreeStockDetailsRepository;
-use App\Helpers\FileHelper;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class TreeTransactionService
@@ -41,8 +31,8 @@ class TreeTransactionService
         ]);
 
         //Find All Wins Of Participant From
-        $partTo = T4tParticipantRepository::findByParticipantID($id_part_to);
-        $wins = T4tWinsRepository::findAllUnused($id_part_from, $id_pohon, $qty);
+        $partTo = T4TParticipantRepository::findByParticipantID($id_part_to);
+        $wins = T4TWinsRepository::findAllUnused($id_part_from, $id_pohon, $qty);
         foreach($wins as $win)
         {
             //Update Win

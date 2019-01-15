@@ -4,7 +4,7 @@ namespace App\CBModels;
 use DB;
 use Crocodicstudio\Cbmodel\Core\Model;
 
-class T4tWins extends Model
+class T4TWins extends Model
 {
     public static $tableName = "t4t_wins";
 
@@ -94,11 +94,9 @@ class T4tWins extends Model
 		$this->bl = $bl;
 	}
 
-	/**
-	* @return Part
-	*/
+
 	public function getIdPart() {
-		return Part::findById($this->idPart);
+		return $this->idPart;
 	}
 
 	public function setIdPart($idPart) {
@@ -145,22 +143,17 @@ class T4tWins extends Model
 		$this->relation = $relation;
 	}
 
-	/**
-	* @return Retailer
-	*/
+
 	public function getIdRetailer() {
-		return Retailer::findById($this->idRetailer);
+		return $this->idRetailer;
 	}
 
 	public function setIdRetailer($idRetailer) {
 		$this->idRetailer = $idRetailer;
 	}
 
-	/**
-	* @return ApiTrans
-	*/
 	public function getIdApiTrans() {
-		return ApiTrans::findById($this->idApiTrans);
+		return $this->idApiTrans;
 	}
 
 	public function setIdApiTrans($idApiTrans) {

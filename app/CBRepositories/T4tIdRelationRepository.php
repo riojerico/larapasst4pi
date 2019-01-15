@@ -4,7 +4,7 @@ namespace App\CBRepositories;
 use DB;
 use App\CBModels\T4tIdrelation;
 
-class T4tIdrelationRepository extends T4tIdrelation
+class T4tIdRelationRepository extends T4tIdRelation
 {
     // TODO : Make you own query methods
 

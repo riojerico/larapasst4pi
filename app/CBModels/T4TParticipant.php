@@ -4,7 +4,7 @@ namespace App\CBModels;
 use DB;
 use Crocodicstudio\Cbmodel\Core\Model;
 
-class T4tParticipant extends Model
+class T4TParticipant extends Model
 {
     public static $tableName = "t4t_participant";
 

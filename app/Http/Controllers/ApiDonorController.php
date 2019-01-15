@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\CBModels\T4tParticipant;
-use App\CBModels\Trees4treesFieldDataFieldLogo;
-use App\CBModels\Trees4TreesFieldLogo;
-use App\CBModels\Trees4treesNode;
-use App\CBModels\Users;
-use App\CBRepositories\T4tParticipantRepository;
-use App\CBRepositories\Trees4treesFieldDataFieldLogoRepository;
+use App\CBRepositories\T4TParticipantRepository;
 use App\CBRepositories\Trees4TreesFieldLogoRepository;
-use App\CBRepositories\Trees4treesNodeRepository;
+use App\CBRepositories\Trees4TreesNodeRepository;
 use App\CBServices\ApiLogService;
 use App\CBServices\DonorService;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -46,7 +39,7 @@ class ApiDonorController extends ApiController
 
             $parentParticipant = $user->getT4tParticipantNo();
             $participant = DonorService::register($parentParticipant, $request);
-            $participantNode = Trees4treesNodeRepository::findByParticipantID($participant->getId());
+            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
             $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
 
             $data = [];
@@ -96,15 +89,15 @@ class ApiDonorController extends ApiController
                 'photo'=>'image'
             ]);
 
-            $oldParticipant = T4tParticipantRepository::findByParticipantID(request('id_participant'));
-            $oldParticipantNode = Trees4treesNodeRepository::findByParticipantID($oldParticipant->getId());
+            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
+            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
             $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
 
             $parentParticipant = $user->getT4tParticipantNo();
             $participant = DonorService::update($request);
             DB::commit();
 
-            $participantNode = Trees4treesNodeRepository::findByParticipantID($participant->getId());
+            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
             $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
 
             $data = [];

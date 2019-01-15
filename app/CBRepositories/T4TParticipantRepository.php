@@ -2,9 +2,9 @@
 namespace App\CBRepositories;
 
 use DB;
-use App\CBModels\T4tParticipant;
+use App\CBModels\T4TParticipant;
 
-class T4tParticipantRepository extends T4tParticipant
+class T4TParticipantRepository extends T4TParticipant
 {
     // TODO : Make you own query methods
 

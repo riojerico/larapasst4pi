@@ -36,33 +36,25 @@ class PlantingMaps extends Model
 		$this->no = $no;
 	}
 
-	/**
-	* @return Mapdata
-	*/
 	public function getIdMapdata() {
-		return Mapdata::findById($this->idMapdata);
+		return $this->idMapdata;
 	}
 
 	public function setIdMapdata($idMapdata) {
 		$this->idMapdata = $idMapdata;
 	}
 
-	/**
-	* @return Part
-	*/
+
 	public function getIdPart() {
-		return Part::findById($this->idPart);
+		return $this->idPart;
 	}
 
 	public function setIdPart($idPart) {
 		$this->idPart = $idPart;
 	}
 
-	/**
-	* @return Shipment
-	*/
 	public function getIdShipment() {
-		return Shipment::findById($this->idShipment);
+		return $this->idShipment;
 	}
 
 	public function setIdShipment($idShipment) {

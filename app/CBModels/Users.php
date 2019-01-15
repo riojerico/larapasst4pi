@@ -1,7 +1,6 @@
 <?php
 namespace App\CBModels;
 
-use App\CBRepositories\T4tParticipantRepository;
 use DB;
 use Crocodicstudio\Cbmodel\Core\Model;
 
@@ -105,10 +104,10 @@ class Users extends Model
 	}
 
 	/**
-	* @return T4tParticipant
+	* @return T4TParticipant
 	*/
 	public function getT4tParticipantNo() {
-		return T4tParticipant::findById($this->t4tParticipantNo);
+		return T4TParticipant::findById($this->t4tParticipantNo);
 	}
 
 	public function setT4tParticipantNo($t4tParticipantNo) {

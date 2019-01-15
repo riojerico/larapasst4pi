@@ -32,11 +32,8 @@ class OauthClients extends Model
 		$this->id = $id;
 	}
 
-	/**
-	* @return User
-	*/
 	public function getUserId() {
-		return User::findById($this->userId);
+		return $this->userId;
 	}
 
 	public function setUserId($userId) {

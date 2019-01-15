@@ -2,9 +2,9 @@
 namespace App\CBRepositories;
 
 use DB;
-use App\CBModels\T4tWins;
+use App\CBModels\T4TWins;
 
-class T4tWinsRepository extends T4tWins
+class T4TWinsRepository extends T4TWins
 {
     // TODO : Make you own query methods
 

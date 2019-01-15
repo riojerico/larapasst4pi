@@ -85,10 +85,10 @@ class Trees4TreesFieldLogo extends Model
 	}
 
     /**
-     * @return Trees4treesFileManaged
+     * @return Trees4TreesFileManaged
      */
 	public function getFieldLogoFid() {
-		return Trees4treesFileManaged::findById($this->fieldLogoFid);
+		return Trees4TreesFileManaged::findById($this->fieldLogoFid);
 	}
 
 	public function setFieldLogoFid($fieldLogoFid) {

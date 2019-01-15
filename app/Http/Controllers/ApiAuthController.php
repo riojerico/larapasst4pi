@@ -7,7 +7,6 @@ use App\CBRepositories\OauthClientsRepository;
 use App\CBServices\ApiLogService;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
-use App\Http\Middleware\ApiLog;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Passport\Http\Controllers\AccessTokenController;

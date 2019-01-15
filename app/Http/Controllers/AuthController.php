@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\CBRepositories\UsersRepository;
 use App\Helpers\ValidationExceptionHelper;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

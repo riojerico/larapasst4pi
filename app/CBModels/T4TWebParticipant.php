@@ -23,10 +23,10 @@ class T4TWebParticipant extends Model
 
     
 	/**
-	* @return T4tParticipant
+	* @return T4TParticipant
 	*/
 	public function getIdPart() {
-		return T4tParticipant::findById($this->idPart);
+		return T4TParticipant::findById($this->idPart);
 	}
 
 	public function setIdPart($idPart) {

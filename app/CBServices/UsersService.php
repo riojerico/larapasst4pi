@@ -9,11 +9,9 @@
 namespace App\CBServices;
 
 
-use App\CBModels\T4tParticipant;
 use App\CBModels\Users;
-use App\CBRepositories\T4tParticipantRepository;
+use App\CBRepositories\T4TParticipantRepository;
 use App\CBRepositories\UsersRepository;
-use App\Helpers\FileHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -52,7 +50,7 @@ class UsersService
     public static function register(Request $request)
     {
         //insert to t4t_participant
-        $participant = T4tParticipantRepository::findByEmail($request->get("email"));
+        $participant = T4TParticipantRepository::findByEmail($request->get("email"));
 
         if($exist = UsersRepository::findByEmail($request->get("email"))) {
             if($exist->getId()) {

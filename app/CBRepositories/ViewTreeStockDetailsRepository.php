@@ -1,7 +1,6 @@
 <?php
 namespace App\CBRepositories;
 
-use App\CBModels\ApiLogs;
 use Illuminate\Support\Facades\DB;
 
 class ViewTreeStockDetailsRepository

@@ -83,10 +83,10 @@ class TreeTransactions extends Model
 	}
 
 	/**
-	* @return T4tParticipant
+	* @return T4TParticipant
 	*/
 	public function getIdPartFrom() {
-		return T4tParticipant::findById($this->idPartFrom);
+		return T4TParticipant::findById($this->idPartFrom);
 	}
 
 	public function setIdPartFrom($idPartFrom) {
@@ -94,10 +94,10 @@ class TreeTransactions extends Model
 	}
 
 	/**
-	* @return T4tParticipant
+	* @return T4TParticipant
 	*/
 	public function getIdPartTo() {
-		return T4tParticipant::findById($this->idPartTo);
+		return T4TParticipant::findById($this->idPartTo);
 	}
 
 	public function setIdPartTo($idPartTo) {

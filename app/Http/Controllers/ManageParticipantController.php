@@ -58,7 +58,7 @@ class ManageParticipantController extends Controller
             $user->save();
 
             //Update t4t participant
-            $participant = T4tParticipant::findById($user->getT4tParticipantNo()->getNo());
+            $participant = T4TParticipant::findById($user->getT4tParticipantNo()->getNo());
             $participant->setName($user->getName());
             $participant->setLastname(request('lastname'));
             $participant->setEmail($user->getEmail());
@@ -78,7 +78,7 @@ class ManageParticipantController extends Controller
         $user = Users::findById($id);
         $user->delete();
 
-        T4tParticipant::deleteById($user->getT4tParticipantNo()->getNo());
+        T4TParticipant::deleteById($user->getT4tParticipantNo()->getNo());
 
         DB::table("oauth_clients")->where("user_id", $user->getId())->delete();
         DB::table("oauth_access_tokens")->where("user_id", $user->getId())->delete();

@@ -4,7 +4,7 @@ namespace App\CBRepositories;
 use DB;
 use App\CBModels\Trees4treesNode;
 
-class Trees4treesNodeRepository extends Trees4treesNode
+class Trees4TreesNodeRepository extends Trees4treesNode
 {
     // TODO : Make you own query methods
 

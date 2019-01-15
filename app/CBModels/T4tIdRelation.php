@@ -1,11 +1,11 @@
 <?php
 namespace App\CBModels;
 
-use App\CBRepositories\T4tParticipantRepository;
+use App\CBRepositories\T4TParticipantRepository;
 use DB;
 use Crocodicstudio\Cbmodel\Core\Model;
 
-class T4tIdrelation extends Model
+class T4tIdRelation extends Model
 {
     public static $tableName = "t4t_idrelation";
 
@@ -28,10 +28,10 @@ class T4tIdrelation extends Model
 	}
 
 	/**
-	* @return T4tParticipantRepository
+	* @return T4TParticipantRepository
 	*/
 	public function getIdPart() {
-		return T4tParticipantRepository::findByParticipantID($this->idPart);
+		return T4TParticipantRepository::findByParticipantID($this->idPart);
 	}
 
 	public function setIdPart($idPart) {
@@ -39,10 +39,10 @@ class T4tIdrelation extends Model
 	}
 
     /**
-     * @return T4tParticipantRepository
+     * @return T4TParticipantRepository
      */
 	public function getRelatedPart() {
-		return T4tParticipantRepository::findByParticipantID($this->relatedPart);
+		return T4TParticipantRepository::findByParticipantID($this->relatedPart);
 	}
 
 	public function setRelatedPart($relatedPart) {

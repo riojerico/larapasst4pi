@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\CBModels\T4tWins;
-use App\CBModels\TreeTransactions;
-use App\CBRepositories\T4tWinsRepository;
+use App\CBRepositories\T4TWinsRepository;
 use App\CBRepositories\TreeTransactionsRepository;
 use App\CBServices\ApiLogService;
 use App\CBServices\TreeTransactionService;
@@ -55,7 +53,7 @@ class ApiTreeController extends ApiController
             $data['id_part_to'] = $id_part_to;
             $data['no_trans'] = $trans->no_transaction;
 
-            $t4tWin = T4tWinsRepository::findByTrans($id_trans);
+            $t4tWin = T4TWinsRepository::findByTrans($id_trans);
             $winData = DB::table("view_donor_wins")->where("wins", $t4tWin->getWins())->first();
             $winData->land_photo = DB::table("t4t_t4t.t4t_lahan_details")
                 ->where("kd_lahan", $winData->land_id)
