@@ -8,6 +8,13 @@ class T4tWinsRepository extends T4tWins
 {
     // TODO : Make you own query methods
 
+    public static function findByTrans($id_trans) {
+        $data = static::simpleQuery()
+            ->where("id_api_trans", $id_trans)
+            ->first();
+        return new static($data);
+    }
+
     public static function findAllUnused($id_part, $id_pohon = null, $limit = 10)
     {
         $data = static::simpleQuery()
