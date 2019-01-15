@@ -17,6 +17,8 @@ class BlockedRequestHelper
 {
 
     private $request;
+    private $limitToBlockTemporary = 3;
+    private $limitToBlockPermanent = 3;
     /**
      * BlockedRequestHelper constructor.
      * @param Request $request
@@ -40,11 +42,7 @@ class BlockedRequestHelper
         return sha1($domain.'|'.$ip);
     }
 
-    /**
-     * @param int $limit
-     * @throws \Exception
-     */
-    public function checkPermanentBlockedRequest($limit = 3)
+    public function checkBlockedRequest()
     {
         $key = $this->requestSignature($this->request);
         $check = BlockedRequestsRepository::findByRequestSignature($key);
@@ -53,28 +51,24 @@ class BlockedRequestHelper
             throw new \Exception("PERMANENT_BLOCKED_REQUEST", 429);
         }
 
-        if($check->getRequestCount() > $limit) {
+        if($check->getRequestCount() > $this->limitToBlockPermanent) {
             $update = BlockedRequests::findById($check->getId());
             $update->setStatus("PERMANENT");
             $update->save();
-
             throw new \Exception("PERMANENT_BLOCKED_REQUEST", 429);
         }
 
+        if ($check->getStatus() == "TEMPORARY") {
+            $this->increaseTemporary($check->getId());
+            throw new \Exception("TEMPORARY_BLOCKED_REQUEST", 429);
+        }
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function checkBlockedRequest()
+    private function increaseTemporary($id)
     {
-        $key = $this->requestSignature($this->request);
-        if(Cache::has($key.':blocked')) {
-            $this->hitBlockedTime();
-            throw new \Exception("TEMPORARY_BLOCKED_REQUEST", 429);
-        }else{
-            $this->blockRequest();
-        }
+        $update = BlockedRequests::findById($id);
+        $update->setRequestCount($update->getRequestCount()+1);
+        $update->save();
     }
 
     public function unblockByKey($key)
@@ -83,62 +77,24 @@ class BlockedRequestHelper
         Cache::forget($key.':time');
     }
 
-    public function unblockRequest($ip)
-    {
-        $key = $this->hashSignature($this->request->route()->getDomain(), $ip);
-        Cache::forget($key.':blocked');
-        Cache::forget($key.':time');
-    }
-
-    public function requestTime()
-    {
-        $key = $this->requestSignature($this->request);
-        $time = Cache::get($key.':time');
-        return $time;
-    }
-
-    public function checkRequestCount()
+    private function checkRequestCount()
     {
         $key = $this->requestSignature($this->request);
         return Cache::get($key.':time');
     }
 
-    public function hitRequest()
+    private function hitRequest()
     {
         $key = $this->requestSignature($this->request);
-        Cache::increment($key.':time',1);
+        Cache::increment($key.':time', 1);
     }
 
     public function hitBlockedTime()
     {
+        $this->hitRequest();
         $key = $this->requestSignature($this->request);
-        $blocked = BlockedRequestsRepository::findByRequestSignature($key);
-        if($blocked->getId()) {
-            $update = BlockedRequests::findById($blocked->getId());
-            $update->setRequestCount($blocked->getRequestCount()+1);
-            $update->save();
-        }else{
+        if($this->checkRequestCount()>$this->limitToBlockTemporary) {
             BlockedRequestsRepository::saveBlocked($this->request, $key, 1,"TEMPORARY");
-        }
-    }
-
-    public function checkBlockedTime()
-    {
-        $key = $this->requestSignature($this->request);
-        $blocked = BlockedRequestsRepository::findByRequestSignature($key);
-        return $blocked->getRequestCount()?:0;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function blockRequest()
-    {
-        $key = $this->requestSignature($this->request);
-        if($this->checkRequestCount() > 3) {
-            Cache::put($key.':blocked', 1,30);
-            $this->hitBlockedTime();
-            $this->checkBlockedRequest();
         }
     }
 }

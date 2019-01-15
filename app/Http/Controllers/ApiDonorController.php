@@ -27,7 +27,7 @@ class ApiDonorController extends ApiController
 
         try {
 
-            $blockedRequest->checkPermanentBlockedRequest(3);
+            $blockedRequest->checkBlockedRequest();
 
             $this->validate($request, [
                 'first_name' => 'required|string|min:3|max:99',
@@ -78,7 +78,7 @@ class ApiDonorController extends ApiController
 
         DB::beginTransaction();
         try {
-            $blockedRequest->checkPermanentBlockedRequest(3);
+            $blockedRequest->checkBlockedRequest();
 
             $this->validate($request, [
                 'id_participant'=>'required|string',

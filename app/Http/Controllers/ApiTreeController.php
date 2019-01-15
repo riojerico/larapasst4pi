@@ -28,7 +28,7 @@ class ApiTreeController extends ApiController
         $user = $this->initUser();
         DB::beginTransaction();
         try{
-            $blockedRequest->checkPermanentBlockedRequest(3);
+            $blockedRequest->checkBlockedRequest();
 
             $this->validate($request,[
                 'id_part_to'=>'required|string',

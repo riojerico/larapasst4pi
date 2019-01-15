@@ -22,9 +22,6 @@ class ApiAuthController extends AccessTokenController
 
         try {
             //Check Permanent Blocked Request
-            $blockedRequest->checkPermanentBlockedRequest();
-
-            //Check Temporary Blocked Request
             $blockedRequest->checkBlockedRequest();
 
             //get username (default is :email)
@@ -89,7 +86,8 @@ class ApiAuthController extends AccessTokenController
             //Save Log
             ApiLogService::saveEvent("FAILED CREDENTIAL",401);
 
-            $blockedRequest->hitRequest();
+            $blockedRequest->hitBlockedTime();
+
             return ResponseHelper::responseAPI(401, $e->getMessage());
         }
         catch (\Exception $e) {
