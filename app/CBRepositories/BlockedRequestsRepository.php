@@ -18,19 +18,30 @@ class BlockedRequestsRepository extends BlockedRequests
      * @param Request $request
      * @param int $requestCount
      */
-    public static function saveBlocked($request, $key, $requestCount)
+    public static function saveBlocked($request, $key, $requestCount, $status)
     {
         $new = new static();
         $new->setUseragent($request->header('User-Agent'));
         $new->setIp($request->ip());
         $new->setRequestCount($requestCount);
         $new->setRequestSignature($key);
+        $new->setStatus($status);
         $new->save();
     }
 
     public static function isExistByRequestSignature($signature)
     {
-        return static::simpleQuery()->where("request_signature")->exists();
+        return static::simpleQuery()
+            ->where("request_signature", $signature)
+            ->exists();
+    }
+
+    public static function isExistPermanentByRequestSignature($signature)
+    {
+        return static::simpleQuery()
+            ->where("request_signature", $signature)
+            ->where('status','PERMANENT')
+            ->exists();
     }
 
     public static function findByRequestSignature($key)

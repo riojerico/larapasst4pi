@@ -28,8 +28,7 @@ class BlockedRequestController extends Controller
         $data = BlockedRequests::findById($id);
 
         //Unblock
-        $block = new BlockedRequestHelper($request);
-        $block->unblockRequest($data->getIp());
+        (new BlockedRequestHelper($request))->unblockByKey($data->getRequestSignature());
 
         BlockedRequests::deleteById($id);
         return redirect()->back()->with(['message'=>'Unblock success!','message_type'=>'success']);
