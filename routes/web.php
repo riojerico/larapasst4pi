@@ -26,7 +26,7 @@ Route::middleware(["auth:api"])->prefix("api")->group(function () {
     $this->get("tree/stock","ApiTreeController@getStock");
     $this->post("donor/update","ApiDonorController@postUpdate");
     $this->post("donor/create","ApiDonorController@postCreate");
-    $this->get("donor/list", "ApiDonorCOntroller@getList");
+    $this->get("donor/list", "ApiDonorController@getList");
 });
 
 Route::prefix(config("app.admin_path"))->group(function () {
