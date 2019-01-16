@@ -37,6 +37,7 @@ Route::prefix(config("app.admin_path"))->group(function () {
     $this->get("activity-log/detail/{id}", "ActivityLogController@getDetail");
     $this->get("activity-log", "ActivityLogController@getIndex");
 
+    $this->get("clear-cache", "AdminUserController@getClearCache");
     $this->post('manage-user/add-save','AdminUserController@postAddSave');
     $this->get('manage-user/add','AdminUserController@getAdd');
     $this->post('manage-user/edit-save/{id}', 'AdminUserController@postEditSave');
