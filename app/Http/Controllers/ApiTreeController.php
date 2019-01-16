@@ -55,9 +55,11 @@ class ApiTreeController extends ApiController
 
             $t4tWin = T4TWinsRepository::findByTrans($id_trans);
             $winData = DB::table("view_donor_wins")->where("wins", $t4tWin->getWins())->first();
-            $winData->land_photo = DB::table("t4t_t4t.t4t_lahan_details")
-                ->where("kd_lahan", $winData->land_id)
-                ->get();
+            if($winData) {
+                $winData->land_photo = DB::table("t4t_t4t.t4t_lahan_details")
+                    ->where("kd_lahan", $winData->land_id)
+                    ->get();
+            }
 
             $data = array_merge($data, json_decode(json_encode($winData),true));
 
