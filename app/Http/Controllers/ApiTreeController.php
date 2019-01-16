@@ -61,6 +61,8 @@ class ApiTreeController extends ApiController
 
             $data = array_merge($data, json_decode(json_encode($winData),true));
 
+            ApiLogService::saveData([], $data, "ASSIGN TREE", 200);
+
             DB::commit();
             return ResponseHelper::responseAPI(200,'success', $data);
         }catch (ValidationException $e) {
