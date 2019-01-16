@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CBModels\Users;
 use App\CBRepositories\UsersRepository;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
@@ -20,6 +21,13 @@ class AdminUserController extends Controller
         $data['currentMenu'] = "User Admin";
         $data['result'] = UsersRepository::findAllAdminPagination(20);
         return view('admin_user', $data);
+    }
+
+    public function getClearCache()
+    {
+        Cache::flush();
+        return redirect()->action('DashboardController@getIndex')
+            ->with(['message'=>'Cache has been flushed!','message_type'=>'success']);
     }
 
     public function getAdd()

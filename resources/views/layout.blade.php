@@ -67,6 +67,12 @@
                             Manage Admin User
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ $currentMenu=='Cache'?'active':'' }}" href="{{ action('AdminUserController@getClearCache') }}">
+                            <span data-feather="file-text"></span>
+                            Clear Cache
+                        </a>
+                    </li>
                     @endif
 
                     @if(auth()->user()->role == "Participant")

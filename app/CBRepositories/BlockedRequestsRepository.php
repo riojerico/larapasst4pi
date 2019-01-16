@@ -20,13 +20,14 @@ class BlockedRequestsRepository extends BlockedRequests
      */
     public static function saveBlocked($request, $key, $requestCount, $status)
     {
-        $new = new static();
-        $new->setUseragent($request->header('User-Agent'));
-        $new->setIp($request->ip());
-        $new->setRequestCount($requestCount);
-        $new->setRequestSignature($key);
-        $new->setStatus($status);
-        $new->save();
+        DB::table("blocked_requests")
+        ->insert([
+            'useragent'=>$request->header('User-Agent'),
+            'ip'=>$request->ip(),
+            'request_count'=>$requestCount,
+            'request_signature'=>$key,
+            'status'=>$status
+        ]);
     }
 
     public static function isExistByRequestSignature($signature)
