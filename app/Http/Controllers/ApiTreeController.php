@@ -82,7 +82,7 @@ class ApiTreeController extends ApiController
         $blockedRequest = new BlockedRequestHelper($request);
         $user = $this->initUser();
         try {
-            $blockedRequest->checkPermanentBlockedRequest(3);
+            $blockedRequest->checkBlockedRequest();
 
             $this->validate($request, [
                 'date_from' => 'date',
