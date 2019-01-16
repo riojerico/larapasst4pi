@@ -10,6 +10,7 @@ use App\Helpers\ResponseHelper;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
+use Laravel\Passport\Passport;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -21,6 +22,7 @@ class ApiAuthController extends AccessTokenController
         $blockedRequest = new BlockedRequestHelper(request());
 
         try {
+
             //Check Permanent Blocked Request
             $blockedRequest->checkBlockedRequest();
 
@@ -59,10 +61,7 @@ class ApiAuthController extends AccessTokenController
             $log->save();
 
 
-            return ResponseHelper::responseAPI(200,'success',null,[
-                'access_token'=>$data['access_token'],
-                'refresh_token'=>$data['refresh_token']
-            ]);
+            return ResponseHelper::responseAPI(200,'success',null,$data);
         }
         catch (ModelNotFoundException $e) {
             //return error message
