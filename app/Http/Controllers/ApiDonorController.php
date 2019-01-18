@@ -92,40 +92,35 @@ class ApiDonorController extends ApiController
             $oldParticipant = DB::table("t4t_t4t.t4t_participant")
                 ->where("id", request('id_participant'))
                 ->first();
-//            $oldParticipantNode = DB::table("trees_trees4trees.trees4trees_node")
-//                ->where("title", $oldParticipant->id)
-//                ->first();
 
-//            $oldParticipantLogoURI = null;
-//            $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
-//                ->where("entity_id", $oldParticipant->id)
-//                ->first();
-//            if($oldParticipantLogo) {
-//                $oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
-//                    ->where("fid", $oldParticipantLogo->fid)
-//                    ->first();
-//                if($oldParticipantLogoFile) {
-//                    $oldParticipantLogoURI = $oldParticipantLogoFile->uri;
-//                }
-//            }
+            $oldParticipantLogoURI = null;
+            $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+                ->where("entity_id", $oldParticipant->id)
+                ->first();
+            if($oldParticipantLogo) {
+                $oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                    ->where("fid", $oldParticipantLogo->fid)
+                    ->first();
+                if($oldParticipantLogoFile) {
+                    $oldParticipantLogoURI = $oldParticipantLogoFile->uri;
+                }
+            }
 
 
             $participant = DonorService::update($request);
-//            $participantNode = DB::table("trees_trees4trees.trees4trees_node")
-//                ->where("title", $participant->getId())
-//                ->first();
-//            $participantLogoURI = null;
-//            $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
-//                ->where("entity_id", $participant->getId())
-//                ->first();
-//            if($participantLogo) {
-//                $participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
-//                    ->where("fid", $participantLogo->fid)
-//                    ->first();
-//                if($participantLogoFile) {
-//                    $participantLogoURI = $participantLogoFile->uri;
-//                }
-//            }
+
+            $participantLogoURI = null;
+            $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+                ->where("entity_id", $participant->getId())
+                ->first();
+            if($participantLogo) {
+                $participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                    ->where("fid", $participantLogo->fid)
+                    ->first();
+                if($participantLogoFile) {
+                    $participantLogoURI = $participantLogoFile->uri;
+                }
+            }
 
 
             $data = [];
@@ -135,16 +130,16 @@ class ApiDonorController extends ApiController
             $data['email'] = $participant->email;
             $data['comment'] = $participant->comment;
             $data['join_date'] = $participant->date_join;
-//            $data['photo'] = $participantLogoURI;
+            $data['photo'] = $participantLogoURI;
 
             //Save Log
-//            ApiLogService::saveData([
-//                'first_name'=> $oldParticipant->name,
-//                'last_name'=> $oldParticipant->last_name,
-//                'email'=> $oldParticipant->email,
-//                'comment'=> $oldParticipant->comment
-//                'photo'=> $oldParticipantLogoURI
-//            ], $data, "UPDATE DONOR", 200);
+            ApiLogService::saveData([
+                'first_name'=> $oldParticipant->name,
+                'last_name'=> $oldParticipant->lastname,
+                'email'=> $oldParticipant->email,
+                'comment'=> $oldParticipant->comment,
+                'photo'=> $oldParticipantLogoURI
+            ], $data, "UPDATE DONOR", 200);
 
             DB::commit();
             return ResponseHelper::responseAPI(200,  "success", $data);
