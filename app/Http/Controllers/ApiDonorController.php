@@ -78,7 +78,7 @@ class ApiDonorController extends ApiController
 
         DB::beginTransaction();
         try {
-//            $blockedRequest->checkBlockedRequest();
+            $blockedRequest->checkBlockedRequest();
 
             $this->validate($request, [
                 'id_participant'=>'required|string',
@@ -94,7 +94,6 @@ class ApiDonorController extends ApiController
             $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
 
             $participant = DonorService::update($request);
-            DB::commit();
 
             $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
             $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
@@ -117,6 +116,7 @@ class ApiDonorController extends ApiController
                 'photo'=> $oldParticipantLogo->getFieldLogoFid()->getUri()
             ], $data, "UPDATE DONOR", 200);
 
+            DB::commit();
             return ResponseHelper::responseAPI(200,  "success", $data);
         } catch (ValidationException $e) {
 
