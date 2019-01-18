@@ -161,7 +161,7 @@ class DonorService
 
         //Insert to t4t_participant
         $a = [];
-        if($request->get("first_name")) $a['first_name'] = $request->get('first_name');
+        if($request->get("first_name")) $a['name'] = $request->get('first_name');
         if($request->get("comment")) $a['comment'] = $request->get('comment');
         if($request->get("last_name")) $a['last_name'] = $request->get('last_name');
         if($request->get("email")) $a['email'] = $request->get('email');
