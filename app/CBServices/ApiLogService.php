@@ -41,17 +41,21 @@ class ApiLogService
      */
     public static function saveData($old_data, $new_data, $description, $status_code)
     {
-        $a = [];
-        $a['name'] = basename(request()->url());
-        $a['description'] = $description;
-        $a['url'] = request()->fullUrl();
-        $a['ip'] = request()->ip();
-        $a['useragent'] = request()->header("User-Agent");
-        $a['request_data'] = json_encode(request()->all());
-        $a['response_code'] = $status_code;
-        $a['old_data'] = json_encode($old_data);
-        $a['new_data'] = json_encode($new_data);
-        DB::table("api_logs")->insert($a);
+        try{
+            $a = [];
+            $a['name'] = basename(request()->url());
+            $a['description'] = $description;
+            $a['url'] = request()->fullUrl();
+            $a['ip'] = request()->ip();
+            $a['useragent'] = request()->header("User-Agent");
+            $a['request_data'] = json_encode(request()->all());
+            $a['response_code'] = $status_code;
+            $a['old_data'] = json_encode($old_data);
+            $a['new_data'] = json_encode($new_data);
+            DB::table("api_logs")->insert($a);
+        }catch (\Exception $e) {
+            throw new \Exception($e);
+        }
     }
 
     /**

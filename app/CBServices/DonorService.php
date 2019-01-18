@@ -216,6 +216,10 @@ class DonorService
                 'field_participant_name_value'=>$participant->name
             ]);
 
+        $participant = DB::table("t4t_t4t.t4t_participant")
+            ->where("id", $request->get('id_participant'))
+            ->first();
+
         return $participant;
     }
 }
