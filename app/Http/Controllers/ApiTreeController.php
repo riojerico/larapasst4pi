@@ -97,12 +97,16 @@ class ApiTreeController extends ApiController
 
             $this->validate($request, [
                 'date_from' => 'date',
-                'date_until' => 'date'
+                'date_until' => 'date',
+                'limit'=>'integer',
+                'offset'=>'integer'
             ]);
 
             $dateFrom = $request->get('date_from', date('Y-m') . '-01');
             $dateUntil = $request->get('date_until', date('Y-m-t'));
-            $data = TreeTransactionsRepository::findAllTransactionByParticipant($user->getT4tParticipantNo()->getId(), $dateFrom, $dateUntil);
+            $limit = $request->get('limit',10);
+            $offset = $request->get('offset',0);
+            $data = TreeTransactionsRepository::findAllTransactionByParticipant($user->getT4tParticipantNo()->getId(), $dateFrom, $dateUntil, $limit, $offset);
             return ResponseHelper::responseAPI(200, 'success', $data);
         }catch (ValidationException $e) {
             //Save Log
