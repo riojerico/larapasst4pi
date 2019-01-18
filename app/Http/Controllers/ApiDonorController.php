@@ -95,23 +95,33 @@ class ApiDonorController extends ApiController
             $oldParticipantNode = DB::table("trees_trees4trees.trees4trees_node")
                 ->where("title", $oldParticipant->id)
                 ->first();
-            $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+
+            $oldParticipantLogoURI = null;
+            if($oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
                 ->where("entity_id", $oldParticipant->id)
-                ->first();
-            $oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
-                ->where("fid", $oldParticipantLogo->fid)
-                ->first();
+                ->first()) {
+                if($oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                    ->where("fid", $oldParticipantLogo->fid)
+                    ->first()) {
+                    $oldParticipantLogoURI = $oldParticipantLogoFile->uri;
+                }
+            }
+
 
             $participant = DonorService::update($request);
             $participantNode = DB::table("trees_trees4trees.trees4trees_node")
                 ->where("title", $participant->getId())
                 ->first();
-            $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+            $participantLogoURI = null;
+            if($participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
                 ->where("entity_id", $participant->getId())
-                ->first();
-            $participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
-                ->where("fid", $participantLogo->fid)
-                ->first();
+                ->first()) {
+                if($participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                    ->where("fid", $participantLogo->fid)
+                    ->first()) {
+                    $participantLogoURI = $participantLogoFile->uri;
+                }
+            }
 
 
             $data = [];
@@ -121,7 +131,7 @@ class ApiDonorController extends ApiController
             $data['email'] = $participant->getEmail();
             $data['comment'] = $participant->getComment();
             $data['join_date'] = $participant->getDateJoin();
-            $data['photo'] = $participantLogoFile->uri;
+            $data['photo'] = $participantLogoURI;
 
             //Save Log
             ApiLogService::saveData([
@@ -129,7 +139,7 @@ class ApiDonorController extends ApiController
                 'last_name'=> $oldParticipant->last_name,
                 'email'=> $oldParticipant->email,
                 'comment'=> $oldParticipant->comment,
-                'photo'=> $oldParticipantLogoFile->uri
+                'photo'=> $oldParticipantLogoURI
             ], $data, "UPDATE DONOR", 200);
 
             DB::commit();
