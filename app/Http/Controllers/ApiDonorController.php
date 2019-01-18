@@ -186,8 +186,13 @@ class ApiDonorController extends ApiController
 
         try {
             $this->validate($request, [
-                'email' => 'email'
+                'email' => 'email',
+                'limit'=>'integer',
+                'offset'=>'integer'
             ]);
+
+            $limit = $request->get('limit',10);
+            $offset = $request->get('offset', 0);
 
             $parentID = $user->getT4tParticipantNo()->getId();
 
@@ -195,6 +200,8 @@ class ApiDonorController extends ApiController
                 ->leftjoin("view_donor_total_tree as a","a.id_user","=","view_donor_details.id_user")
                 ->where("view_donor_details.id_part", $parentID)
                 ->select("view_donor_details.*","a.total_tree")
+                ->take($limit)
+                ->offset($offset)
                 ->get();
 
             foreach($data as &$row)
