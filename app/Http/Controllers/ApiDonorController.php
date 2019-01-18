@@ -117,11 +117,11 @@ class ApiDonorController extends ApiController
             $participantLogoURI = null;
             $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
                 ->where("entity_id", $participant->getId())
-                ->first()
+                ->first();
             if($participantLogo) {
                 $participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
                     ->where("fid", $participantLogo->fid)
-                    ->first()
+                    ->first();
                 if($participantLogoFile) {
                     $participantLogoURI = $participantLogoFile->uri;
                 }
