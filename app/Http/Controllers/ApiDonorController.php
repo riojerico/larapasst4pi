@@ -98,6 +98,9 @@ class ApiDonorController extends ApiController
             $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
                 ->where("entity_id", $oldParticipant->id)
                 ->first();
+            $oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                ->where("fid", $oldParticipantLogo->fid)
+                ->first();
 
             $participant = DonorService::update($request);
             $participantNode = DB::table("trees_trees4trees.trees4trees_node")
@@ -105,6 +108,9 @@ class ApiDonorController extends ApiController
                 ->first();
             $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
                 ->where("entity_id", $participant->getId())
+                ->first();
+            $participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                ->where("fid", $participantLogo->fid)
                 ->first();
 
 
@@ -115,16 +121,16 @@ class ApiDonorController extends ApiController
             $data['email'] = $participant->getEmail();
             $data['comment'] = $participant->getComment();
             $data['join_date'] = $participant->getDateJoin();
-//            $data['photo'] = $participantLogo->getFieldLogoFid()->getUri();
+            $data['photo'] = $participantLogoFile->uri;
 
             //Save Log
-//            ApiLogService::saveData([
-//                'first_name'=> $oldParticipant->getName(),
-//                'last_name'=> $oldParticipant->getLastname(),
-//                'email'=> $oldParticipant->getEmail(),
-//                'comment'=> $oldParticipant->getComment(),
-//                'photo'=> $oldParticipantLogo->getFieldLogoFid()->getUri()
-//            ], $data, "UPDATE DONOR", 200);
+            ApiLogService::saveData([
+                'first_name'=> $oldParticipant->name,
+                'last_name'=> $oldParticipant->last_name,
+                'email'=> $oldParticipant->email,
+                'comment'=> $oldParticipant->comment,
+                'photo'=> $oldParticipantLogoFile->uri
+            ], $data, "UPDATE DONOR", 200);
 
             DB::commit();
             return ResponseHelper::responseAPI(200,  "success", $data);
