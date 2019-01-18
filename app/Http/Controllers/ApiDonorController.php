@@ -91,14 +91,15 @@ class ApiDonorController extends ApiController
 
 
             $participant = DonorService::update($request);
+            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
+            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
 
-            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
-            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
-            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
+//            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
+//
+//            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
+//            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
 
 
-//            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
-//            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
 
             $data = [];
             $data['id_user'] = $participant->getId();
