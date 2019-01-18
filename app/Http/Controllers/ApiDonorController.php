@@ -92,9 +92,9 @@ class ApiDonorController extends ApiController
             $oldParticipant = DB::table("t4t_t4t.t4t_participant")
                 ->where("id", request('id_participant'))
                 ->first();
-            $oldParticipantNode = DB::table("trees_trees4trees.trees4trees_node")
-                ->where("title", $oldParticipant->id)
-                ->first();
+//            $oldParticipantNode = DB::table("trees_trees4trees.trees4trees_node")
+//                ->where("title", $oldParticipant->id)
+//                ->first();
 
 //            $oldParticipantLogoURI = null;
 //            $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
@@ -111,9 +111,9 @@ class ApiDonorController extends ApiController
 
 
             $participant = DonorService::update($request);
-            $participantNode = DB::table("trees_trees4trees.trees4trees_node")
-                ->where("title", $participant->getId())
-                ->first();
+//            $participantNode = DB::table("trees_trees4trees.trees4trees_node")
+//                ->where("title", $participant->getId())
+//                ->first();
 //            $participantLogoURI = null;
 //            $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
 //                ->where("entity_id", $participant->getId())
