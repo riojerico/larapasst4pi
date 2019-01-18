@@ -162,54 +162,54 @@ class DonorService
 
         //Insert to t4t_participant
         $participant = T4TParticipantRepository::findByParticipantID($request->get('id_participant'));
-        if($request->get("first_name")) $participant->setName($request->get("first_name"));
-        if($request->get("comment")) $participant->setComment($request->get("comment"));
-        if($request->get("last_name")) $participant->setLastname($request->get("last_name"));
-        if($request->get("email")) $participant->setEmail($request->get("email"));
-        $participant->save();
-
-        //insert trees4trees_node
-        $node = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
-
-        DB::table("trees_trees4trees.trees4trees_node")
-            ->where("title", $participant->getId())
-            ->update(['changed'=>time()]);
-
-        if($request->hasFile("photo")) {
-            $photo = $request->file("photo");
-            $photoURL = FileHelper::uploadFile("photo");
-            $fliename = $_FILES['photo']['name'];
-            $imagedetails = getimagesize($_FILES['photo']['tmp_name']);
-            $width = $imagedetails[0];
-            $height = $imagedetails[1];
-            $fileManaged = new Trees4TreesFileManaged();
-            $fileManaged->setFilename($photo->getFilename());
-            $fileManaged->setUri($photoURL);
-            $fileManaged->setFilemime($photo->getMimeType());
-            $fileManaged->setFilesize($photo->getSize());
-            $fileManaged->setStatus(1);
-            $fileManaged->setTimestamp(time());
-            $fileManaged->setType("image");
-            $fileManaged->save();
-
-            //Save Trees4Trees Logo
-            DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
-            ->where("entity_id", $node->getNid())
-            ->update([
-                'field_logo_fid'=>$fileManaged->getFid(),
-                'field_logo_alt'=>$fliename,
-                'field_logo_title'=>$fliename,
-                'field_logo_height'=>$height,
-                'field_logo_width'=>$width
-            ]);
-        }
-
-        //Save Trees4treesParticipantName
-        DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
-            ->where("entity_id", $node->getNid())
-            ->update([
-                'field_participant_name_value'=>$participant->getName()
-            ]);
+//        if($request->get("first_name")) $participant->setName($request->get("first_name"));
+//        if($request->get("comment")) $participant->setComment($request->get("comment"));
+//        if($request->get("last_name")) $participant->setLastname($request->get("last_name"));
+//        if($request->get("email")) $participant->setEmail($request->get("email"));
+//        $participant->save();
+//
+//        //insert trees4trees_node
+//        $node = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
+//
+//        DB::table("trees_trees4trees.trees4trees_node")
+//            ->where("title", $participant->getId())
+//            ->update(['changed'=>time()]);
+//
+//        if($request->hasFile("photo")) {
+//            $photo = $request->file("photo");
+//            $photoURL = FileHelper::uploadFile("photo");
+//            $fliename = $_FILES['photo']['name'];
+//            $imagedetails = getimagesize($_FILES['photo']['tmp_name']);
+//            $width = $imagedetails[0];
+//            $height = $imagedetails[1];
+//            $fileManaged = new Trees4TreesFileManaged();
+//            $fileManaged->setFilename($photo->getFilename());
+//            $fileManaged->setUri($photoURL);
+//            $fileManaged->setFilemime($photo->getMimeType());
+//            $fileManaged->setFilesize($photo->getSize());
+//            $fileManaged->setStatus(1);
+//            $fileManaged->setTimestamp(time());
+//            $fileManaged->setType("image");
+//            $fileManaged->save();
+//
+//            //Save Trees4Trees Logo
+//            DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+//            ->where("entity_id", $node->getNid())
+//            ->update([
+//                'field_logo_fid'=>$fileManaged->getFid(),
+//                'field_logo_alt'=>$fliename,
+//                'field_logo_title'=>$fliename,
+//                'field_logo_height'=>$height,
+//                'field_logo_width'=>$width
+//            ]);
+//        }
+//
+//        //Save Trees4treesParticipantName
+//        DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
+//            ->where("entity_id", $node->getNid())
+//            ->update([
+//                'field_participant_name_value'=>$participant->getName()
+//            ]);
 
         return $participant;
 
