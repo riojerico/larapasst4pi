@@ -133,13 +133,32 @@ class ApiDonorController extends ApiController
             $data['photo'] = $participantLogoURI;
 
             //Save Log
-            ApiLogService::saveData([
+//            ApiLogService::saveData([
+//                'first_name'=> $oldParticipant->name,
+//                'last_name'=> $oldParticipant->lastname,
+//                'email'=> $oldParticipant->email,
+//                'comment'=> $oldParticipant->comment,
+//                'photo'=> $oldParticipantLogoURI
+//            ], $data, "UPDATE DONOR", 200);
+            $oldData = [
                 'first_name'=> $oldParticipant->name,
                 'last_name'=> $oldParticipant->lastname,
                 'email'=> $oldParticipant->email,
                 'comment'=> $oldParticipant->comment,
                 'photo'=> $oldParticipantLogoURI
-            ], $data, "UPDATE DONOR", 200);
+            ];
+
+            $a = [];
+            $a['name'] = basename(request()->url());
+            $a['description'] = "UPDATE DONOR";
+            $a['url'] = request()->fullUrl();
+            $a['ip'] = request()->ip();
+            $a['useragent'] = request()->header("User-Agent");
+            $a['request_data'] = json_encode(request()->all());
+            $a['response_code'] = 200;
+            $a['old_data'] = json_encode($oldData);
+            $a['new_data'] = json_encode($data);
+            DB::table("api_logs")->insert($a);
 
             DB::commit();
             return ResponseHelper::responseAPI(200,  "success", $data);

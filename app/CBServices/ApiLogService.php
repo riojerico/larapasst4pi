@@ -50,8 +50,8 @@ class ApiLogService
             $a['useragent'] = request()->header("User-Agent");
             $a['request_data'] = json_encode(request()->all());
             $a['response_code'] = $status_code;
-//            $a['old_data'] = json_encode($old_data);
-//            $a['new_data'] = json_encode($new_data);
+            $a['old_data'] = json_encode($old_data);
+            $a['new_data'] = json_encode($new_data);
             DB::table("api_logs")->insert($a);
         }catch (\Exception $e) {
             throw new \Exception($e);
