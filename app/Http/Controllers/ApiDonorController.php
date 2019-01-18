@@ -89,11 +89,13 @@ class ApiDonorController extends ApiController
                 'photo'=>'image'
             ]);
 
-//            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
-//            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
-//            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
 
             $participant = DonorService::update($request);
+
+            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
+            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
+            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
+
 
 //            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
 //            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
