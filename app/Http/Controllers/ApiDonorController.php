@@ -89,16 +89,23 @@ class ApiDonorController extends ApiController
                 'photo'=>'image'
             ]);
 
+            $oldParticipant = DB::table("t4t_t4t.t4t_participant")
+                ->where("id", request('id_participant'))
+                ->first();
+            $oldParticipantNode = DB::table("trees_trees4trees.trees4trees_node")
+                ->where("title", $oldParticipant->id)
+                ->first();
+            $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+                ->where("entity_id", $oldParticipant->id)
+                ->first();
 
             $participant = DonorService::update($request);
-            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
-            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
-
-//            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
-//
-//            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
-//            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
-
+            $participantNode = DB::table("trees_trees4trees.trees4trees_node")
+                ->where("title", $participant->getId())
+                ->first();
+            $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+                ->where("entity_id", $participant->getId())
+                ->first();
 
 
             $data = [];
