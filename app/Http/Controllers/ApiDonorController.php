@@ -89,14 +89,14 @@ class ApiDonorController extends ApiController
                 'photo'=>'image'
             ]);
 
-            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
-            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
-            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
+//            $oldParticipant = T4TParticipantRepository::findByParticipantID(request('id_participant'));
+//            $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
+//            $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
 
             $participant = DonorService::update($request);
 
-            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
-            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
+//            $participantNode = Trees4TreesNodeRepository::findByParticipantID($participant->getId());
+//            $participantLogo = Trees4TreesFieldLogoRepository::findByEntityId($participantNode->getNid());
 
             $data = [];
             $data['id_user'] = $participant->getId();
@@ -105,16 +105,16 @@ class ApiDonorController extends ApiController
             $data['email'] = $participant->getEmail();
             $data['comment'] = $participant->getComment();
             $data['join_date'] = $participant->getDateJoin();
-            $data['photo'] = $participantLogo->getFieldLogoFid()->getUri();
+//            $data['photo'] = $participantLogo->getFieldLogoFid()->getUri();
 
             //Save Log
-            ApiLogService::saveData([
-                'first_name'=> $oldParticipant->getName(),
-                'last_name'=> $oldParticipant->getLastname(),
-                'email'=> $oldParticipant->getEmail(),
-                'comment'=> $oldParticipant->getComment(),
-                'photo'=> $oldParticipantLogo->getFieldLogoFid()->getUri()
-            ], $data, "UPDATE DONOR", 200);
+//            ApiLogService::saveData([
+//                'first_name'=> $oldParticipant->getName(),
+//                'last_name'=> $oldParticipant->getLastname(),
+//                'email'=> $oldParticipant->getEmail(),
+//                'comment'=> $oldParticipant->getComment(),
+//                'photo'=> $oldParticipantLogo->getFieldLogoFid()->getUri()
+//            ], $data, "UPDATE DONOR", 200);
 
             DB::commit();
             return ResponseHelper::responseAPI(200,  "success", $data);
