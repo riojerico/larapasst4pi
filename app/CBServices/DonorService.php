@@ -211,7 +211,7 @@ class DonorService
 
 //        //Save Trees4treesParticipantName
         DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
-            ->where("entity_id", $node->getNid())
+            ->where("entity_id", $node->nid)
             ->update([
                 'field_participant_name_value'=>$participant->name
             ]);
