@@ -191,8 +191,8 @@ class ApiDonorController extends ApiController
                 'offset'=>'integer'
             ]);
 
-            $limit = $request->get('limit',10);
-            $offset = $request->get('offset', 0);
+            $limit = $request->get('limit')?:10;
+            $offset = $request->get('offset')?:0;
 
             $parentID = $user->getT4tParticipantNo()->getId();
 
