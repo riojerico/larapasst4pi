@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CBRepositories\T4TWinsRepository;
 use App\CBRepositories\TreeTransactionsRepository;
+use App\CBRepositories\ViewTreeStockDetailsRepository;
 use App\CBServices\ApiLogService;
 use App\CBServices\TreeTransactionService;
 use App\CBServices\ViewTreeStockDetailsService;
@@ -42,6 +43,12 @@ class ApiTreeController extends ApiController
             $id_part_to = $request->get('id_part_to');
             $id_pohon = $request->get('id_pohon');
             $qty = $request->get('quantity');
+
+            //Check Stock Pohon
+            $stock = ViewTreeStockDetailsRepository::findUnusedTree($id_part_from, $id_pohon);
+            if($stock==0) {
+                return ResponseHelper::responseAPI(403,'The tree stock is empty!');
+            }
 
             $id_trans = TreeTransactionService::assignTree($id_part_from, $id_part_to, $qty, $id_pohon);
             $trans = DB::table("tree_transactions")->where("id",$id_trans)->first();

@@ -78,13 +78,13 @@ class ApiDonorController extends ApiController
 
         DB::beginTransaction();
         try {
-            $blockedRequest->checkBlockedRequest();
+//            $blockedRequest->checkBlockedRequest();
 
             $this->validate($request, [
                 'id_participant'=>'required|string',
-                'first_name' => 'string|min:3|max:99',
-                'last_name'=> 'string|min:3|max:99',
-                'email'=> 'email',
+                'first_name' => 'required|string|min:3|max:99',
+                'last_name'=> 'required|string|min:3|max:99',
+                'email'=> 'required|email',
                 'comment'=> 'string|max:255',
                 'photo'=>'image'
             ]);
@@ -93,7 +93,6 @@ class ApiDonorController extends ApiController
             $oldParticipantNode = Trees4TreesNodeRepository::findByParticipantID($oldParticipant->getId());
             $oldParticipantLogo = Trees4TreesFieldLogoRepository::findByEntityId($oldParticipantNode->getNid());
 
-            $parentParticipant = $user->getT4tParticipantNo();
             $participant = DonorService::update($request);
             DB::commit();
 
