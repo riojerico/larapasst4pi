@@ -163,7 +163,7 @@ class DonorService
         $a = [];
         if($request->get("first_name")) $a['name'] = $request->get('first_name');
         if($request->get("comment")) $a['comment'] = $request->get('comment');
-        if($request->get("last_name")) $a['last_name'] = $request->get('last_name');
+        if($request->get("last_name")) $a['lastname'] = $request->get('last_name');
         if($request->get("email")) $a['email'] = $request->get('email');
         DB::table("t4t_t4t.t4t_participant")
         ->where("id", $request->get('id_participant'))

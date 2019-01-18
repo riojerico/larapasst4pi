@@ -131,7 +131,7 @@ class ApiDonorController extends ApiController
             $data = [];
             $data['id_user'] = $participant->id;
             $data['first_name'] = $participant->name;
-            $data['last_name'] = $participant->last_name;
+            $data['last_name'] = $participant->lastname;
             $data['email'] = $participant->email;
             $data['comment'] = $participant->comment;
             $data['join_date'] = $participant->date_join;
