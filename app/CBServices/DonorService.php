@@ -171,7 +171,7 @@ class DonorService
 
         //insert trees4trees_node
         $node = DB::table("trees_trees4trees.trees4trees_node")
-            ->where("id", $request->get('id_participant'))
+            ->where("title", $request->get('id_participant'))
             ->first();
 
         DB::table("trees_trees4trees.trees4trees_node")
