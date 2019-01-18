@@ -97,12 +97,14 @@ class ApiDonorController extends ApiController
                 ->first();
 
             $oldParticipantLogoURI = null;
-            if($oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+            $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
                 ->where("entity_id", $oldParticipant->id)
-                ->first()) {
-                if($oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                ->first();
+            if($oldParticipantLogo) {
+                $oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
                     ->where("fid", $oldParticipantLogo->fid)
-                    ->first()) {
+                    ->first();
+                if($oldParticipantLogoFile) {
                     $oldParticipantLogoURI = $oldParticipantLogoFile->uri;
                 }
             }
@@ -113,12 +115,14 @@ class ApiDonorController extends ApiController
                 ->where("title", $participant->getId())
                 ->first();
             $participantLogoURI = null;
-            if($participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+            $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
                 ->where("entity_id", $participant->getId())
-                ->first()) {
-                if($participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                ->first()
+            if($participantLogo) {
+                $participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
                     ->where("fid", $participantLogo->fid)
-                    ->first()) {
+                    ->first()
+                if($participantLogoFile) {
                     $participantLogoURI = $participantLogoFile->uri;
                 }
             }
