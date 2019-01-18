@@ -152,10 +152,11 @@ class ApiDonorController extends ApiController
             return ResponseHelper::responseAPI(403, $e->getMessage());
         } catch (\Exception $e) {
 
+            DB::rollBack();
+
             //Save Log
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
 
-            DB::rollBack();
             return ResponseHelper::responseAPI(403, $e->getMessage());
         }
     }
