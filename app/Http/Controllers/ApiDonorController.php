@@ -52,7 +52,19 @@ class ApiDonorController extends ApiController
             $data['photo'] = $participantLogo->getFieldLogoFid()->getUri();
 
             //Save Log
-            ApiLogService::saveData([],$data,"CREATE NEW DONOR",200);
+//            ApiLogService::saveData([],$data,"CREATE NEW DONOR",200);
+
+            $a = [];
+            $a['name'] = basename(request()->url());
+            $a['description'] = "CREATE NEW DONOR";
+            $a['url'] = request()->fullUrl();
+            $a['ip'] = request()->ip();
+            $a['useragent'] = request()->header("User-Agent");
+            $a['request_data'] = json_encode(request()->all());
+            $a['response_code'] = 200;
+            $a['old_data'] = json_encode([]);
+            $a['new_data'] = json_encode($data);
+            DB::table("api_logs")->insert($a);
 
             return ResponseHelper::responseAPI(200,  "success", $data);
         } catch (ValidationException $e) {
