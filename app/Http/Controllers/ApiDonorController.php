@@ -55,6 +55,7 @@ class ApiDonorController extends ApiController
 //            ApiLogService::saveData([],$data,"CREATE NEW DONOR",200);
 
             $a = [];
+            $a['created_at'] = date('Y-m-d H:i:s');
             $a['name'] = basename(request()->url());
             $a['description'] = "CREATE NEW DONOR";
             $a['url'] = request()->fullUrl();

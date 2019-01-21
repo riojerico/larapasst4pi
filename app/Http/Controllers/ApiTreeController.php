@@ -73,6 +73,7 @@ class ApiTreeController extends ApiController
 //            ApiLogService::saveData([], $data, "ASSIGN TREE", 200);
 
             $a = [];
+            $a['created_at'] = date('Y-m-d H:i:s');
             $a['name'] = basename(request()->url());
             $a['description'] = "ASSIGN TREE";
             $a['url'] = request()->fullUrl();
