@@ -33,7 +33,7 @@ class ApiTreeController extends ApiController
 
             $this->validate($request,[
                 'id_part_to'=>'required|string',
-                'id_pohon'=>'required|integer',
+                'tree_id'=>'required|integer',
                 'quantity'=>'required|integer|min:1|max:1'
             ]);
 
@@ -41,7 +41,7 @@ class ApiTreeController extends ApiController
             //Find the wins of id_part_from
             $id_part_from = $user->getT4tParticipantNo()->getId();
             $id_part_to = $request->get('id_part_to');
-            $id_pohon = $request->get('id_pohon');
+            $id_pohon = $request->get('tree_id');
             $qty = $request->get('quantity');
 
             //Check Stock Pohon
