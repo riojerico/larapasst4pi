@@ -6,6 +6,7 @@ use App\CBRepositories\T4TWinsRepository;
 use App\CBRepositories\TreeTransactionsRepository;
 use App\CBRepositories\ViewTreeStockDetailsRepository;
 use App\CBServices\ApiLogService;
+use App\CBServices\ErrorCodeService;
 use App\CBServices\TreeTransactionService;
 use App\CBServices\ViewTreeStockDetailsService;
 use App\Helpers\BlockedRequestHelper;
@@ -45,10 +46,14 @@ class ApiTreeController extends ApiController
             $id_pohon = $request->get('tree_id');
             $qty = $request->get('quantity');
 
+            if(!DB::table("t4t_t4t.t4t_pohon")->where("id_pohon", $id_pohon)->exists()) {
+                return ResponseHelper::responseAPI(403,'The tree is not found', ErrorCodeService::TREE_NOT_FOUND);
+            }
+
             //Check Stock Pohon
             $stock = ViewTreeStockDetailsRepository::findUnusedTree($id_part_from, $id_pohon);
             if($stock==0) {
-                return ResponseHelper::responseAPI(403,'STOCK_EMPTY');
+                return ResponseHelper::responseAPI(403,'The tree stock is empty', ErrorCodeService::TREE_STOCK_EMPTY);
             }
 
             $id_trans = TreeTransactionService::assignTree($id_part_from, $id_part_to, $qty, $id_pohon);
@@ -87,7 +92,7 @@ class ApiTreeController extends ApiController
             DB::table("api_logs")->insert($a);
 
             DB::commit();
-            return ResponseHelper::responseAPI(201,'success', $data);
+            return ResponseHelper::responseAPI(201,'success', null, $data);
         }catch (ValidationException $e) {
             $messages = ValidationExceptionHelper::errorsToString($e->errors(),", ");
 
@@ -95,12 +100,12 @@ class ApiTreeController extends ApiController
             ApiLogService::saveResponse($messages,"VALIDATION EXCEPTION", 403);
 
             $blockedRequest->hitBlockedTime();
-            return ResponseHelper::responseAPI(403, $messages);
+            return ResponseHelper::responseAPI(403, $messages, ErrorCodeService::VALIDATION_EXCEPTION);
         }catch (\Exception $e) {
             //Save Log
             DB::rollback();
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
@@ -123,17 +128,17 @@ class ApiTreeController extends ApiController
             $limit = $request->get('limit',10);
             $offset = $request->get('offset',0);
             $data = TreeTransactionsRepository::findAllTransactionByParticipant($user->getT4tParticipantNo()->getId(), $dateFrom, $dateUntil, $limit, $offset);
-            return ResponseHelper::responseAPI(200, 'success', $data);
+            return ResponseHelper::responseAPI(200, 'success', null, $data);
         }catch (ValidationException $e) {
             //Save Log
             ApiLogService::saveResponse($e->getMessage(),"VALIDATION EXCEPTION", 403);
 
             $blockedRequest->hitBlockedTime();
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::VALIDATION_EXCEPTION);
         }catch (\Exception $e) {
             //Save Log
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
@@ -142,11 +147,11 @@ class ApiTreeController extends ApiController
         $user = $this->initUser();
         try{
             $data = ViewTreeStockDetailsService::findAllStock($user->getT4tParticipantNo()->getId());
-            return ResponseHelper::responseAPI(200,'success', $data);
+            return ResponseHelper::responseAPI(200,'success', null, $data);
         }catch (\Exception $e) {
             //Save Log
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 }

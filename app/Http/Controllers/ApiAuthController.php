@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CBModels\ApiLogs;
 use App\CBRepositories\OauthClientsRepository;
 use App\CBServices\ApiLogService;
+use App\CBServices\ErrorCodeService;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
 use App\User;
@@ -61,7 +62,7 @@ class ApiAuthController extends AccessTokenController
             $log->save();
 
 
-            return ResponseHelper::responseAPI(200,'success',null,$data);
+            return ResponseHelper::responseAPI(200,'success', null,null,$data);
         }
         catch (ModelNotFoundException $e) {
             //return error message
@@ -77,7 +78,7 @@ class ApiAuthController extends AccessTokenController
             $log->setResponseCode(403);
             $log->save();
 
-            return ResponseHelper::responseAPI(403,$e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::USER_NOT_FOUND);
         }
         catch (OAuthServerException $e) { //password not correct..token not granted
             //return error message
@@ -87,7 +88,7 @@ class ApiAuthController extends AccessTokenController
 
             $blockedRequest->hitBlockedTime();
 
-            return ResponseHelper::responseAPI(401, $e->getMessage());
+            return ResponseHelper::responseAPI(401, $e->getMessage(), ErrorCodeService::FAILED_CREDENTIAL);
         }
         catch (\Exception $e) {
             ////return error message
@@ -96,19 +97,19 @@ class ApiAuthController extends AccessTokenController
                 //Save Log
                 ApiLogService::saveEvent("TEMPORARY BLOCKED REQUEST", 400);
 
-                return ResponseHelper::responseAPI(400,'Too many failed request, please wait for 30 minutes');
+                return ResponseHelper::responseAPI(400,'Too many failed request, please wait for 30 minutes',ErrorCodeService::TEMPORARY_BLOCKED);
             }elseif ($e->getMessage() == "PERMANENT_BLOCKED_REQUEST") {
 
                 //Save Log
                 ApiLogService::saveEvent("PERMANENT BLOCKED REQUEST", 400);
 
-                return ResponseHelper::responseAPI(400,'You have been blocked, please contact Admin');
+                return ResponseHelper::responseAPI(400,'You have been blocked, please contact Admin',ErrorCodeService::PERMANENT_BLOCKED);
             }else{
 
                 //Save Log
                 ApiLogService::saveResponse($e->getTraceAsString(),"ERROR",400);
 
-                return ResponseHelper::responseAPI(400,$e->getMessage());
+                return ResponseHelper::responseAPI(400,$e->getMessage(),ErrorCodeService::GENERAL_ERROR);
             }
         }
     }

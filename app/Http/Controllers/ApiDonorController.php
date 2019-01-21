@@ -7,6 +7,7 @@ use App\CBRepositories\Trees4TreesFieldLogoRepository;
 use App\CBRepositories\Trees4TreesNodeRepository;
 use App\CBServices\ApiLogService;
 use App\CBServices\DonorService;
+use App\CBServices\ErrorCodeService;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
 use App\Helpers\ValidationExceptionHelper;
@@ -52,8 +53,6 @@ class ApiDonorController extends ApiController
             $data['join_date'] = $participant->getDateJoin();
             $data['photo'] = $participantLogo->getFieldLogoFid()->getUri();
 
-            //Save Log
-//            ApiLogService::saveData([],$data,"CREATE NEW DONOR",200);
 
             $a = [];
             $a['created_at'] = date('Y-m-d H:i:s');
@@ -68,7 +67,7 @@ class ApiDonorController extends ApiController
             $a['new_data'] = json_encode($data);
             DB::table("api_logs")->insert($a);
 
-            return ResponseHelper::responseAPI(201,  "success", $data);
+            return ResponseHelper::responseAPI(201,  "success", null, $data);
         } catch (ValidationException $e) {
 
             $messages = ValidationExceptionHelper::errorsToString($e->errors(),", ");
@@ -76,13 +75,13 @@ class ApiDonorController extends ApiController
             ApiLogService::saveResponse($messages,"VALIDATION EXCEPTION", 403);
 
             $blockedRequest->hitBlockedTime();
-            return ResponseHelper::responseAPI(403, $messages);
+            return ResponseHelper::responseAPI(403, $messages, ErrorCodeService::VALIDATION_EXCEPTION);
         } catch (\Exception $e) {
 
             //Save Log
             ApiLogService::saveResponse($e->getMessage(),"ERROR EXCEPTION", 403);
 
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
@@ -148,13 +147,7 @@ class ApiDonorController extends ApiController
             $data['photo'] = $participantLogoURI;
 
             //Save Log
-//            ApiLogService::saveData([
-//                'first_name'=> $oldParticipant->name,
-//                'last_name'=> $oldParticipant->lastname,
-//                'email'=> $oldParticipant->email,
-//                'comment'=> $oldParticipant->comment,
-//                'photo'=> $oldParticipantLogoURI
-//            ], $data, "UPDATE DONOR", 200);
+//
             $oldData = [
                 'first_name'=> $oldParticipant->name,
                 'last_name'=> $oldParticipant->lastname,
@@ -176,7 +169,7 @@ class ApiDonorController extends ApiController
             DB::table("api_logs")->insert($a);
 
             DB::commit();
-            return ResponseHelper::responseAPI(200,  "success", $data);
+            return ResponseHelper::responseAPI(200,  "success", null, $data);
         } catch (ValidationException $e) {
 
             $messages = ValidationExceptionHelper::errorsToString($e->errors(),", ");
@@ -185,7 +178,7 @@ class ApiDonorController extends ApiController
             ApiLogService::saveResponse($messages,"VALIDATION EXCEPTION", 403);
 
             $blockedRequest->hitBlockedTime();
-            return ResponseHelper::responseAPI(403, $messages);
+            return ResponseHelper::responseAPI(403, $messages, ErrorCodeService::VALIDATION_EXCEPTION);
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -193,7 +186,7 @@ class ApiDonorController extends ApiController
             //Save Log
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
 
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
@@ -236,9 +229,9 @@ class ApiDonorController extends ApiController
                 $row->wins = $wins;
             }
 
-            return ResponseHelper::responseAPI(200,  "success", $data);
+            return ResponseHelper::responseAPI(200,  "success", null, $data);
         } catch (ValidationException $e) {
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::VALIDATION_EXCEPTION);
         }
     }
 }

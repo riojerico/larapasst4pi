@@ -27,10 +27,11 @@ class ResponseHelper
      * @param array $additional_object
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function responseAPI($status, $message, $data = null, $additional_object = null)
+    public static function responseAPI($status, $message, $errorCode = null, $data = null, $additional_object = null)
     {
         $response = [];
         $response['status'] = $status;
+        $response['error_code'] = $errorCode;
         $response['message'] = $message;
 
         if($additional_object && is_array($additional_object)) {
