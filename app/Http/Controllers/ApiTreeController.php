@@ -70,7 +70,19 @@ class ApiTreeController extends ApiController
 
             $data = array_merge($data, json_decode(json_encode($winData),true));
 
-            ApiLogService::saveData([], $data, "ASSIGN TREE", 200);
+//            ApiLogService::saveData([], $data, "ASSIGN TREE", 200);
+
+            $a = [];
+            $a['name'] = basename(request()->url());
+            $a['description'] = "ASSIGN TREE";
+            $a['url'] = request()->fullUrl();
+            $a['ip'] = request()->ip();
+            $a['useragent'] = request()->header("User-Agent");
+            $a['request_data'] = json_encode(request()->all());
+            $a['response_code'] = 200;
+            $a['old_data'] = json_encode([]);
+            $a['new_data'] = json_encode($data);
+            DB::table("api_logs")->insert($a);
 
             DB::commit();
             return ResponseHelper::responseAPI(200,'success', $data);
