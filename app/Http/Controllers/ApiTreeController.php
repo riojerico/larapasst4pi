@@ -33,7 +33,7 @@ class ApiTreeController extends ApiController
 
             $this->validate($request,[
                 'id_part_to'=>'required|string',
-                'id_pohon'=>'integer',
+                'id_pohon'=>'required|integer',
                 'quantity'=>'required|integer|min:1|max:1'
             ]);
 
