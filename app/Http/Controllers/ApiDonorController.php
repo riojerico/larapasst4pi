@@ -9,6 +9,7 @@ use App\CBServices\ApiLogService;
 use App\CBServices\DonorService;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
+use App\Helpers\ValidationExceptionHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -70,11 +71,12 @@ class ApiDonorController extends ApiController
             return ResponseHelper::responseAPI(201,  "success", $data);
         } catch (ValidationException $e) {
 
+            $messages = ValidationExceptionHelper::errorsToString($e->errors(),", ");
             //Save Log
-            ApiLogService::saveResponse($e->getMessage(),"VALIDATION EXCEPTION", 403);
+            ApiLogService::saveResponse($messages,"VALIDATION EXCEPTION", 403);
 
             $blockedRequest->hitBlockedTime();
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $messages);
         } catch (\Exception $e) {
 
             //Save Log
@@ -177,11 +179,13 @@ class ApiDonorController extends ApiController
             return ResponseHelper::responseAPI(200,  "success", $data);
         } catch (ValidationException $e) {
 
+            $messages = ValidationExceptionHelper::errorsToString($e->errors(),", ");
+
             //Save Log
-            ApiLogService::saveResponse($e->getMessage(),"VALIDATION EXCEPTION", 403);
+            ApiLogService::saveResponse($messages,"VALIDATION EXCEPTION", 403);
 
             $blockedRequest->hitBlockedTime();
-            return ResponseHelper::responseAPI(403, $e->getMessage());
+            return ResponseHelper::responseAPI(403, $messages);
         } catch (\Exception $e) {
 
             DB::rollBack();
