@@ -67,7 +67,7 @@ class ApiDonorController extends ApiController
             $a['new_data'] = json_encode($data);
             DB::table("api_logs")->insert($a);
 
-            return ResponseHelper::responseAPI(200,  "success", $data);
+            return ResponseHelper::responseAPI(201,  "success", $data);
         } catch (ValidationException $e) {
 
             //Save Log

@@ -86,7 +86,7 @@ class ApiTreeController extends ApiController
             DB::table("api_logs")->insert($a);
 
             DB::commit();
-            return ResponseHelper::responseAPI(200,'success', $data);
+            return ResponseHelper::responseAPI(201,'success', $data);
         }catch (ValidationException $e) {
             //Save Log
             ApiLogService::saveResponse($e->getMessage(),"VALIDATION EXCEPTION", 403);
