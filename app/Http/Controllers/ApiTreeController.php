@@ -47,7 +47,7 @@ class ApiTreeController extends ApiController
             //Check Stock Pohon
             $stock = ViewTreeStockDetailsRepository::findUnusedTree($id_part_from, $id_pohon);
             if($stock==0) {
-                return ResponseHelper::responseAPI(403,'The tree stock is empty!');
+                return ResponseHelper::responseAPI(403,'STOCK_EMPTY');
             }
 
             $id_trans = TreeTransactionService::assignTree($id_part_from, $id_part_to, $qty, $id_pohon);
