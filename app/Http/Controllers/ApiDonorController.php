@@ -81,7 +81,7 @@ class ApiDonorController extends ApiController
             //Save Log
             ApiLogService::saveResponse($e->getMessage(),"ERROR EXCEPTION", 403);
 
-            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
@@ -186,7 +186,7 @@ class ApiDonorController extends ApiController
             //Save Log
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
 
-            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 

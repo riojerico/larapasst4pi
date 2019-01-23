@@ -105,7 +105,7 @@ class ApiTreeController extends ApiController
             //Save Log
             DB::rollback();
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
-            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
@@ -138,7 +138,7 @@ class ApiTreeController extends ApiController
         }catch (\Exception $e) {
             //Save Log
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
-            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
@@ -151,7 +151,7 @@ class ApiTreeController extends ApiController
         }catch (\Exception $e) {
             //Save Log
             ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
-            return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 }
