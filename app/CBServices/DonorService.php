@@ -139,7 +139,37 @@ class DonorService
                 'bundle'=>'see_your_trees_api',
                 'entity_id'=>$node->getNid(),
                 'language'=>'und',
-                'field_participant_name_value'=>$participant->getName()
+                'field_participant_name_value'=>$participant->getName().' '.$participant->getLastname()
+            ]);
+
+            //Save Main Text
+            DB::table("trees_trees4trees.trees4trees_field_data_field_main_text")
+            ->insert([
+                'entity_type'=>'node',
+                'bundle'=>'see_your_trees_api',
+                'entity_id'=>$node->getNid(),
+                'language'=>'und',
+                'field_main_text_value'=>"<p>A tree has been donated and planted in a community forest on your behalf. That tree will help the environment and improve the lives of a local farming family. Thank You!</p>"
+            ]);
+
+            //Save Widget
+            DB::table("trees_trees4trees.trees4trees_field_data_field_widget_title")
+            ->insert([
+                'entity_type'=>'node',
+                'bundle'=>'see_your_trees_api',
+                'entity_id'=>$node->getNid(),
+                'language'=>'und',
+                'field_widget_title_value'=>"I Planted a Tree!"
+            ]);
+
+            //Save Logo Shape
+            DB::table("trees_trees4trees.trees4trees_field_data_field_widget_title")
+            ->insert([
+                'entity_type'=>'node',
+                'bundle'=>'see_your_trees_api',
+                'entity_id'=>$node->getNid(),
+                'language'=>'und',
+                'field_logo_shape_value'=>"round_logo"
             ]);
 
             DB::commit();
@@ -213,7 +243,7 @@ class DonorService
         DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
             ->where("entity_id", $node->nid)
             ->update([
-                'field_participant_name_value'=>$participant->name
+                'field_participant_name_value'=>$participant->name.' '.$participant->lastname
             ]);
 
         $participant = DB::table("t4t_t4t.t4t_participant")
