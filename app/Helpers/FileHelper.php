@@ -21,6 +21,6 @@ class FileHelper
 
         $destination = "uploads/".date('Y-m');
         $fileData->move($destination, $filename);
-        return $destination.'/'.$filename;
+        return asset($destination.'/'.$filename);
     }
 }

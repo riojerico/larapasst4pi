@@ -62,7 +62,7 @@ class ApiDonorController extends ApiController
             $a['ip'] = request()->ip();
             $a['useragent'] = request()->header("User-Agent");
             $a['request_data'] = json_encode(request()->all());
-            $a['response_code'] = 200;
+            $a['response_code'] = 201;
             $a['old_data'] = json_encode([]);
             $a['new_data'] = json_encode($data);
             DB::table("api_logs")->insert($a);
@@ -120,7 +120,6 @@ class ApiDonorController extends ApiController
                 }
             }
 
-
             $participant = DonorService::update($request);
 
             $participantLogoURI = null;
@@ -147,7 +146,6 @@ class ApiDonorController extends ApiController
             $data['photo'] = $participantLogoURI;
 
             //Save Log
-//
             $oldData = [
                 'first_name'=> $oldParticipant->name,
                 'last_name'=> $oldParticipant->lastname,
@@ -157,6 +155,7 @@ class ApiDonorController extends ApiController
             ];
 
             $a = [];
+            $a['created_at'] = date('Y-m-d H:i:s');
             $a['name'] = basename(request()->url());
             $a['description'] = "UPDATE DONOR";
             $a['url'] = request()->fullUrl();

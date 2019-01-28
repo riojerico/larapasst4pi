@@ -102,10 +102,10 @@ class DonorService
 
             if($request->hasFile("photo")) {
                 $photo = $request->file("photo");
-                $imagedetails = getimagesize($_FILES['photo']['tmp_name']);
+                @$imagedetails = getimagesize($_FILES['photo']['tmp_name']);
                 $fliename = $_FILES['photo']['name'];
-                $width = $imagedetails[0];
-                $height = $imagedetails[1];
+                @$width = $imagedetails[0];
+                @$height = $imagedetails[1];
                 $fileManaged = new Trees4TreesFileManaged();
                 $fileManaged->setFilename($fliename);
                 $fileManaged->setFilemime($photo->getMimeType());
@@ -163,7 +163,7 @@ class DonorService
             ]);
 
             //Save Logo Shape
-            DB::table("trees_trees4trees.trees4trees_field_data_field_widget_title")
+            DB::table("trees_trees4trees.trees4trees_field_data_field_logo_shape")
             ->insert([
                 'entity_type'=>'node',
                 'bundle'=>'see_your_trees_api',
@@ -243,7 +243,7 @@ class DonorService
         DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
             ->where("entity_id", $node->nid)
             ->update([
-                'field_participant_name_value'=>$participant->name.' '.$participant->lastname
+                'field_participant_name_value'=>$request->get('first_name').' '.$request->get('last_name')
             ]);
 
         $participant = DB::table("t4t_t4t.t4t_participant")
