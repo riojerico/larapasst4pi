@@ -9,6 +9,8 @@ use App\CBServices\ApiLogService;
 use App\CBServices\ErrorCodeService;
 use App\CBServices\TreeTransactionService;
 use App\CBServices\ViewTreeStockDetailsService;
+use App\Exceptions\BlockPermanentException;
+use App\Exceptions\BlockTemporaryException;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
 use App\Helpers\ValidationExceptionHelper;
@@ -100,10 +102,16 @@ class ApiTreeController extends ApiController
 
             $blockedRequest->hitBlockedTime();
             return ResponseHelper::responseAPI(403, $messages, ErrorCodeService::VALIDATION_EXCEPTION);
-        }catch (\Exception $e) {
+        } catch (BlockTemporaryException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::TEMPORARY_BLOCKED);
+        } catch (BlockPermanentException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::PERMANENT_BLOCKED);
+        } catch (\Exception $e) {
             //Save Log
             DB::rollback();
-            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
+            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 400);
             return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
@@ -134,22 +142,37 @@ class ApiTreeController extends ApiController
 
             $blockedRequest->hitBlockedTime();
             return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::VALIDATION_EXCEPTION);
-        }catch (\Exception $e) {
+        } catch (BlockTemporaryException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::TEMPORARY_BLOCKED);
+        } catch (BlockPermanentException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::PERMANENT_BLOCKED);
+        } catch (\Exception $e) {
             //Save Log
-            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
+            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 400);
             return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
 
-    public function getStock()
+    public function getStock(Request $request)
     {
+        $blockedRequest = new BlockedRequestHelper($request);
         $user = $this->initUser();
         try{
+            $blockedRequest->checkBlockedRequest();
+
             $data = ViewTreeStockDetailsService::findAllStock($user->getT4tParticipantNo()->getId());
             return ResponseHelper::responseAPI(200,'success', null, $data);
-        }catch (\Exception $e) {
+        } catch (BlockTemporaryException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::TEMPORARY_BLOCKED);
+        } catch (BlockPermanentException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::PERMANENT_BLOCKED);
+        } catch (\Exception $e) {
             //Save Log
-            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
+            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 400);
             return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }

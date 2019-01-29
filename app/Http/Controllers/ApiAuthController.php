@@ -6,6 +6,8 @@ use App\CBModels\ApiLogs;
 use App\CBRepositories\OauthClientsRepository;
 use App\CBServices\ApiLogService;
 use App\CBServices\ErrorCodeService;
+use App\Exceptions\BlockPermanentException;
+use App\Exceptions\BlockTemporaryException;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
 use App\User;
@@ -89,28 +91,15 @@ class ApiAuthController extends AccessTokenController
             $blockedRequest->hitBlockedTime();
 
             return ResponseHelper::responseAPI(401, $e->getMessage(), ErrorCodeService::FAILED_CREDENTIAL);
-        }
-        catch (\Exception $e) {
-            ////return error message
-            if($e->getMessage() == "TEMPORARY_BLOCKED_REQUEST") {
-
-                //Save Log
-                ApiLogService::saveEvent("TEMPORARY BLOCKED REQUEST", 400);
-
-                return ResponseHelper::responseAPI(400,'Too many failed request, please wait for 30 minutes',ErrorCodeService::TEMPORARY_BLOCKED);
-            }elseif ($e->getMessage() == "PERMANENT_BLOCKED_REQUEST") {
-
-                //Save Log
-                ApiLogService::saveEvent("PERMANENT BLOCKED REQUEST", 400);
-
-                return ResponseHelper::responseAPI(400,'You have been blocked, please contact Admin',ErrorCodeService::PERMANENT_BLOCKED);
-            }else{
-
-                //Save Log
-                ApiLogService::saveResponse($e->getTraceAsString(),"ERROR",400);
-
-                return ResponseHelper::responseAPI(400,$e->getMessage(),ErrorCodeService::GENERAL_ERROR);
-            }
+        } catch (BlockTemporaryException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::TEMPORARY_BLOCKED);
+        } catch (BlockPermanentException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::PERMANENT_BLOCKED);
+        } catch (\Exception $e) {
+            ApiLogService::saveResponse($e->getTraceAsString(),"ERROR ExCEPTION",400);
+            return ResponseHelper::responseAPI(400,$e->getMessage(),ErrorCodeService::GENERAL_ERROR);
         }
     }
 

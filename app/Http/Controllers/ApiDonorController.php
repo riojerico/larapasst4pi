@@ -8,6 +8,8 @@ use App\CBRepositories\Trees4TreesNodeRepository;
 use App\CBServices\ApiLogService;
 use App\CBServices\DonorService;
 use App\CBServices\ErrorCodeService;
+use App\Exceptions\BlockPermanentException;
+use App\Exceptions\BlockTemporaryException;
 use App\Helpers\BlockedRequestHelper;
 use App\Helpers\ResponseHelper;
 use App\Helpers\ValidationExceptionHelper;
@@ -76,11 +78,14 @@ class ApiDonorController extends ApiController
 
             $blockedRequest->hitBlockedTime();
             return ResponseHelper::responseAPI(403, $messages, ErrorCodeService::VALIDATION_EXCEPTION);
+        } catch (BlockTemporaryException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::TEMPORARY_BLOCKED);
+        } catch (BlockPermanentException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::PERMANENT_BLOCKED);
         } catch (\Exception $e) {
-
-            //Save Log
-            ApiLogService::saveResponse($e->getMessage(),"ERROR EXCEPTION", 403);
-
+            ApiLogService::saveResponse($e->getMessage(),"ERROR EXCEPTION", 400);
             return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
     }
@@ -178,12 +183,18 @@ class ApiDonorController extends ApiController
 
             $blockedRequest->hitBlockedTime();
             return ResponseHelper::responseAPI(403, $messages, ErrorCodeService::VALIDATION_EXCEPTION);
+        } catch (BlockTemporaryException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::TEMPORARY_BLOCKED);
+        } catch (BlockPermanentException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::PERMANENT_BLOCKED);
         } catch (\Exception $e) {
 
             DB::rollBack();
 
             //Save Log
-            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 403);
+            ApiLogService::saveResponse($e->getMessage(), "ERROR EXCEPTION", 400);
 
             return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::GENERAL_ERROR);
         }
@@ -192,8 +203,12 @@ class ApiDonorController extends ApiController
     public function getList(Request $request)
     {
         $user = $this->initUser();
+        $blockedRequest = new BlockedRequestHelper($request);
 
         try {
+
+            $blockedRequest->checkBlockedRequest();
+
             $this->validate($request, [
                 'email' => 'email',
                 'limit'=>'integer',
@@ -231,6 +246,12 @@ class ApiDonorController extends ApiController
             return ResponseHelper::responseAPI(200,  "success", null, $data);
         } catch (ValidationException $e) {
             return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::VALIDATION_EXCEPTION);
+        } catch (BlockTemporaryException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::TEMPORARY_BLOCKED);
+        } catch (BlockPermanentException $e) {
+            ApiLogService::saveResponse($e->getMessage(), "BLOCK EXCEPTION", 400);
+            return ResponseHelper::responseAPI(400, $e->getMessage(), ErrorCodeService::PERMANENT_BLOCKED);
         }
     }
 }

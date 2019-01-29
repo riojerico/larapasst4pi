@@ -10,6 +10,8 @@ namespace App\Helpers;
 
 use App\CBModels\BlockedRequests;
 use App\CBRepositories\BlockedRequestsRepository;
+use App\Exceptions\BlockPermanentException;
+use App\Exceptions\BlockTemporaryException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 
@@ -47,20 +49,20 @@ class BlockedRequestHelper
         $key = $this->requestSignature($this->request);
         $check = BlockedRequestsRepository::findByRequestSignature($key);
 
-        if($check->getStatus() == "PERMANENT") {
-            throw new \Exception("PERMANENT_BLOCKED_REQUEST", 429);
+        if(env("API_AUTO_BLOCK")===true && $check->getStatus() == "PERMANENT") {
+            throw new BlockPermanentException("PERMANENT_BLOCKED_REQUEST", 429);
         }
 
-        if($check->getRequestCount() > $this->limitToBlockPermanent) {
+        if(env("API_AUTO_BLOCK")===true && $check->getRequestCount() > $this->limitToBlockPermanent) {
             $update = BlockedRequests::findById($check->getId());
             $update->setStatus("PERMANENT");
             $update->save();
-            throw new \Exception("PERMANENT_BLOCKED_REQUEST", 429);
+            throw new BlockPermanentException("PERMANENT_BLOCKED_REQUEST", 429);
         }
 
-        if ($check->getStatus() == "TEMPORARY") {
+        if (env("API_AUTO_BLOCK")===true && $check->getStatus() == "TEMPORARY") {
             $this->increaseTemporary($check->getId());
-            throw new \Exception("TEMPORARY_BLOCKED_REQUEST", 429);
+            throw new BlockTemporaryException("TEMPORARY_BLOCKED_REQUEST", 429);
         }
     }
 
