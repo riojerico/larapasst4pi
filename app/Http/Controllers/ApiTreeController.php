@@ -48,7 +48,7 @@ class ApiTreeController extends ApiController
             $id_pohon = $request->get('tree_id');
             $qty = $request->get('quantity');
 
-            if(!DB::table("t4t_t4t.t4t_pohon")->where("id_pohon", $id_pohon)->exists()) {
+            if(!DB::table(env('DB_T4T_T4T').".t4t_pohon")->where("id_pohon", $id_pohon)->exists()) {
                 return ResponseHelper::responseAPI(403,'The tree is not found', ErrorCodeService::TREE_NOT_FOUND);
             }
 
@@ -71,7 +71,7 @@ class ApiTreeController extends ApiController
             $t4tWin = T4TWinsRepository::findByTrans($id_trans);
             $winData = DB::table("view_donor_wins")->where("wins", $t4tWin->getWins())->first();
             if($winData) {
-                $winData->land_photo = DB::table("t4t_t4t.t4t_lahan_details")
+                $winData->land_photo = DB::table(env('DB_T4T_T4T').".t4t_lahan_details")
                     ->where("kd_lahan", $winData->land_id)
                     ->get();
             }

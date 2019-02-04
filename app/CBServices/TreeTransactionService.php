@@ -36,7 +36,7 @@ class TreeTransactionService
         foreach($wins as $win)
         {
             //Update Win
-            DB::table("t4t_t4t.t4t_wins")
+            DB::table(env('DB_T4T_T4T').".t4t_wins")
             ->where('no',$win->no)
             ->update([
                'id_retailer'=>$id_part_to,
@@ -46,10 +46,10 @@ class TreeTransactionService
 
             //Get Detail
             $stock = ViewTreeStockDetailsRepository::findByShipment($win->no_shipment);
-            $htc = DB::table("t4t_t4t.t4t_htc")->where("no_shipment", $win->no_shipment)
+            $htc = DB::table(env('DB_T4T_T4T').".t4t_htc")->where("no_shipment", $win->no_shipment)
                 ->first();
             //Save To Planting Maps
-            DB::table("t4t_web.planting_maps")->insert([
+            DB::table(env('DB_T4T_WEB').".planting_maps")->insert([
                'id_mapdata'=>$htc->no,
                'id_part'=>$id_part_to,
                'geo'=>$stock->koordinat,

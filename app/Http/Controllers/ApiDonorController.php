@@ -108,16 +108,16 @@ class ApiDonorController extends ApiController
                 'photo'=>'image'
             ]);
 
-            $oldParticipant = DB::table("t4t_t4t.t4t_participant")
+            $oldParticipant = DB::table(env('DB_T4T_T4T').".t4t_participant")
                 ->where("id", request('id_participant'))
                 ->first();
 
             $oldParticipantLogoURI = null;
-            $oldParticipantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+            $oldParticipantLogo = DB::table(env('DB_TREES').".trees4trees_field_data_field_logo")
                 ->where("entity_id", $oldParticipant->id)
                 ->first();
             if($oldParticipantLogo) {
-                $oldParticipantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                $oldParticipantLogoFile = DB::table(env('DB_TREES').".trees4trees_file_managed")
                     ->where("fid", $oldParticipantLogo->fid)
                     ->first();
                 if($oldParticipantLogoFile) {
@@ -128,11 +128,11 @@ class ApiDonorController extends ApiController
             $participant = DonorService::update($request);
 
             $participantLogoURI = null;
-            $participantLogo = DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+            $participantLogo = DB::table(env('DB_TREES').".trees4trees_field_data_field_logo")
                 ->where("entity_id", $participant->id)
                 ->first();
             if($participantLogo) {
-                $participantLogoFile = DB::table("trees_trees4trees.trees4trees_file_managed")
+                $participantLogoFile = DB::table(env('DB_TREES').".trees4trees_file_managed")
                     ->where("fid", $participantLogo->fid)
                     ->first();
                 if($participantLogoFile) {
@@ -226,6 +226,7 @@ class ApiDonorController extends ApiController
                 ->select("view_donor_details.*","a.total_tree")
                 ->take($limit)
                 ->offset($offset)
+                ->orderby('view_donor_details.id_user','desc')
                 ->get();
 
             foreach($data as &$row)
@@ -236,14 +237,14 @@ class ApiDonorController extends ApiController
                     ->get();
                 foreach($wins as &$win)
                 {
-                    $win->land_photo = DB::table("t4t_t4t.t4t_lahan_details")
+                    $win->land_photo = DB::table(env('DB_T4T_T4T').".t4t_lahan_details")
                         ->where("kd_lahan", $win->land_id)
                         ->get();
                 }
                 $row->wins = $wins;
             }
 
-            return ResponseHelper::responseAPI(200,  "success", null, $data);
+            return ResponseHelper::responseAPI(200,  "success", null, $data, ['parent_id'=>$parentID]);
         } catch (ValidationException $e) {
             return ResponseHelper::responseAPI(403, $e->getMessage(), ErrorCodeService::VALIDATION_EXCEPTION);
         } catch (BlockTemporaryException $e) {

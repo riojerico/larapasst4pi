@@ -59,7 +59,7 @@ class DonorService
             $participant->save();
 
             //insert to t4t_idrelation
-            $lastRelation = DB::table("t4t_t4t.t4t_idrelation")
+            $lastRelation = DB::table(env('DB_T4T_T4T').".t4t_idrelation")
                 ->where("id_part", $parentParticipant->getId())
                 ->orderBy("no","desc")
                 ->first();
@@ -68,14 +68,14 @@ class DonorService
             }else{
                 $repeatId = 1;
             }
-            DB::table("t4t_t4t.t4t_idrelation")->insert([
+            DB::table(env('DB_T4T_T4T').".t4t_idrelation")->insert([
                 "id_part"=>$parentParticipant->getId(),
                 "related_part"=>$participantID,
                 "repeat_id"=>$repeatId
             ]);
 
             //insert t4t_web.participant
-            DB::table("t4t_web.participants")->insert([
+            DB::table(env('DB_T4T_WEB').".participants")->insert([
                "id_part"=>$participantID,
                "start_year"=>date('Y'),
                'qty_trees'=>0,
@@ -118,7 +118,7 @@ class DonorService
                 $fileManaged->save();
 
                 //Save Trees4Trees Logo
-                DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+                DB::table(env('DB_TREES').".trees4trees_field_data_field_logo")
                 ->insert([
                    "entity_type"=>'node',
                    'entity_id'=>$node->getNid(),
@@ -133,7 +133,7 @@ class DonorService
             }
 
             //Save Trees4treesParticipantName
-            DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
+            DB::table(env('DB_TREES').".trees4trees_field_data_field_participant_name")
             ->insert([
                 'entity_type'=>'node',
                 'bundle'=>'see_your_trees_api',
@@ -143,7 +143,7 @@ class DonorService
             ]);
 
             //Save Main Text
-            DB::table("trees_trees4trees.trees4trees_field_data_field_main_text")
+            DB::table(env('DB_TREES').".trees4trees_field_data_field_main_text")
             ->insert([
                 'entity_type'=>'node',
                 'bundle'=>'see_your_trees_api',
@@ -153,7 +153,7 @@ class DonorService
             ]);
 
             //Save Widget
-            DB::table("trees_trees4trees.trees4trees_field_data_field_widget_title")
+            DB::table(env('DB_TREES').".trees4trees_field_data_field_widget_title")
             ->insert([
                 'entity_type'=>'node',
                 'bundle'=>'see_your_trees_api',
@@ -163,7 +163,7 @@ class DonorService
             ]);
 
             //Save Logo Shape
-            DB::table("trees_trees4trees.trees4trees_field_data_field_logo_shape")
+            DB::table(env('DB_TREES').".trees4trees_field_data_field_logo_shape")
             ->insert([
                 'entity_type'=>'node',
                 'bundle'=>'see_your_trees_api',
@@ -185,7 +185,7 @@ class DonorService
     public static function update(Request $request)
     {
 
-        $participant = DB::table("t4t_t4t.t4t_participant")
+        $participant = DB::table(env('DB_T4T_T4T').".t4t_participant")
             ->where("id", $request->get('id_participant'))
             ->first();
 
@@ -195,16 +195,16 @@ class DonorService
         if($request->get("comment")) $a['comment'] = $request->get('comment');
         if($request->get("last_name")) $a['lastname'] = $request->get('last_name');
         if($request->get("email")) $a['email'] = $request->get('email');
-        DB::table("t4t_t4t.t4t_participant")
+        DB::table(env('DB_T4T_T4T').".t4t_participant")
         ->where("id", $request->get('id_participant'))
         ->update($a);
 
         //insert trees4trees_node
-        $node = DB::table("trees_trees4trees.trees4trees_node")
+        $node = DB::table(env('DB_TREES').".trees4trees_node")
             ->where("title", $request->get('id_participant'))
             ->first();
 
-        DB::table("trees_trees4trees.trees4trees_node")
+        DB::table(env('DB_TREES').".trees4trees_node")
             ->where("title", $request->get('id_participant'))
             ->update(['changed'=>time()]);
 
@@ -224,11 +224,11 @@ class DonorService
             $a['status'] = 1;
             $a['timestamp'] = time();
             $a['type'] = 'image';
-            $fid = DB::table("trees_trees4trees.trees4trees_file_managed")
+            $fid = DB::table(env('DB_TREES').".trees4trees_file_managed")
                 ->insertGetId($a);
 
             //Save Trees4Trees Logo
-            DB::table("trees_trees4trees.trees4trees_field_data_field_logo")
+            DB::table(env('DB_TREES').".trees4trees_field_data_field_logo")
             ->where("entity_id", $node->nid)
             ->update([
                 'field_logo_fid'=>$fid,
@@ -240,13 +240,13 @@ class DonorService
         }
 
 //        //Save Trees4treesParticipantName
-        DB::table("trees_trees4trees.trees4trees_field_data_field_participant_name")
+        DB::table(env('DB_TREES').".trees4trees_field_data_field_participant_name")
             ->where("entity_id", $node->nid)
             ->update([
                 'field_participant_name_value'=>$request->get('first_name').' '.$request->get('last_name')
             ]);
 
-        $participant = DB::table("t4t_t4t.t4t_participant")
+        $participant = DB::table(env('DB_T4T_T4T').".t4t_participant")
             ->where("id", $request->get('id_participant'))
             ->first();
 
