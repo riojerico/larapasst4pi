@@ -52,6 +52,10 @@ class ApiTreeController extends ApiController
                 return ResponseHelper::responseAPI(403,'The tree is not found', ErrorCodeService::TREE_NOT_FOUND);
             }
 
+            if(!DB::table(env('DB_T4T_T4T').'.t4t_participant')->where('id', $id_part_to)->exists()) {
+                return ResponseHelper::responseAPI(403,'The id_part_to does not exists', ErrorCodeService::USER_NOT_FOUND);
+            }
+
             //Check Stock Pohon
             $stock = ViewTreeStockDetailsRepository::findUnusedTree($id_part_from, $id_pohon);
             if($stock==0) {

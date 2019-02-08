@@ -18,11 +18,11 @@ use Illuminate\Support\Facades\Hash;
 
 class ErrorCodeService
 {
-    const USER_NOT_FOUND = 403001;
     const FAILED_CREDENTIAL = 401001;
     const GENERAL_ERROR = 400000;
     const TEMPORARY_BLOCKED = 400001;
     const PERMANENT_BLOCKED = 400002;
+    const USER_NOT_FOUND = 403001;
     const VALIDATION_EXCEPTION = 403002;
     const TREE_STOCK_EMPTY = 403003;
     const TREE_NOT_FOUND = 403004;

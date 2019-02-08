@@ -19,6 +19,7 @@ class ViewTreeStockDetailsRepository
         return DB::table("view_tree_stock_details")
             ->select("id_pohon","nama_pohon","nama_latin")
             ->where("id_part", $id_participant)
+            ->whereNotNull('nama_pohon')
             ->groupBy("id_pohon")
             ->get();
     }

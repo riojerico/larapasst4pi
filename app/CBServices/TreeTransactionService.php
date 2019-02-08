@@ -16,6 +16,14 @@ use Illuminate\Support\Facades\DB;
 
 class TreeTransactionService
 {
+    /**
+     * @param $id_part_from
+     * @param $id_part_to
+     * @param int $qty
+     * @param null $id_pohon
+     * @return int
+     * @throws \Exception
+     */
     public static function assignTree($id_part_from, $id_part_to, $qty = 1, $id_pohon = null)
     {
         //Save Transaction
@@ -46,8 +54,17 @@ class TreeTransactionService
 
             //Get Detail
             $stock = ViewTreeStockDetailsRepository::findByShipment($win->no_shipment);
-            $htc = DB::table(env('DB_T4T_T4T').".t4t_htc")->where("no_shipment", $win->no_shipment)
+            if(!$stock) throw new \Exception("Sorry stock data for shipment ".$win->no_shipment." is not found!");
+
+            $htc = DB::table(env('DB_T4T_T4T').".t4t_htc")
+                ->where("no_shipment", $win->no_shipment)
                 ->first();
+            if(!$htc) throw new \Exception("Sorry t4t_htc for shipment $win->no_shipment is not found!");
+
+            if(!$stock->mu) {
+                throw new \Exception("Sorry municipality is not found!");
+            }
+
             //Save To Planting Maps
             DB::table(env('DB_T4T_WEB').".planting_maps")->insert([
                'id_mapdata'=>$htc->no,
