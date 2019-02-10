@@ -69,10 +69,10 @@ class TreeTransactionService
             DB::table(env('DB_T4T_WEB').".planting_maps")->insert([
                'id_mapdata'=>$htc->no,
                'id_part'=>$id_part_to,
-               'geo'=>$stock->koordinat,
                'name'=>$partTo->getName(),
                'total_trees'=>1,
                'id_shipment'=>$win->no_shipment,
+               'geo'=>$stock->koordinat,
                'species'=>$stock->nama_latin,
                'area'=>$stock->luas_tanam,
                'village'=>$stock->desa,
