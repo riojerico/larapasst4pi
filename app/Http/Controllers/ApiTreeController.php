@@ -80,7 +80,10 @@ class ApiTreeController extends ApiController
                     ->get();
             }
 
-            $data = array_merge($data, json_decode(json_encode($winData),true));
+            if($winData) {
+                $data = array_merge($data, json_decode(json_encode($winData),true));
+            }
+
 
 
             $a = [];
